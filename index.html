@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ya924 | GitHub Portfolio</title>
+    <!-- 引入 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入自訂樣式 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 背景流光特效 -->
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+    <div class="bg-glow bg-glow-3"></div>
+
+    <div class="container">
+        <!-- 個人資訊頭部 -->
+        <header class="profile-card fade-in">
+            <div class="profile-header">
+                <div class="avatar-container">
+                    <img id="user-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Avatar">
+                    <div class="avatar-ring"></div>
+                </div>
+                <div class="profile-info">
+                    <h1 id="user-name">ya924</h1>
+                    <p class="subtitle"><i class="fa-solid fa-laptop-code"></i> AI Agent & Backend Developer</p>
+                    <p class="bio">專注於構建智能代理（AI Agents）、優化後端服務與自動化流程。探索程式碼的重力極限。</p>
+                    <div class="profile-links">
+                        <a href="https://github.com/ya924" target="_blank" class="btn btn-primary">
+                            <i class="fa-brands fa-github"></i> 前往 GitHub 首頁
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 數據統計區塊 -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-repos">4</span>
+                    <span class="stat-label">公開儲存庫</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-lang">PHP / JS</span>
+                    <span class="stat-label">主要開發語言</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="stat-stars">0</span>
+                    <span class="stat-label">累積星數</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 控制台：搜尋與篩選 -->
+        <section class="control-panel fade-in" style="animation-delay: 0.1s;">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="搜尋儲存庫名稱或描述...">
+            </div>
+            
+            <div class="filter-group">
+                <div class="lang-filters" id="lang-filters">
+                    <button class="filter-btn active" data-lang="all">全部</button>
+                    <button class="filter-btn" data-lang="PHP">PHP</button>
+                    <button class="filter-btn" data-lang="JavaScript">JavaScript</button>
+                    <button class="filter-btn" data-lang="other">其他</button>
+                </div>
+                
+                <div class="sort-box">
+                    <i class="fa-solid fa-sort"></i>
+                    <select id="sort-select">
+                        <option value="pushed">最近更新</option>
+                        <option value="stars">最多星數</option>
+                        <option value="name">字母排序</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- 儲存庫列表 -->
+        <main class="repo-grid" id="repo-grid">
+            <!-- 由 JS 動態渲染或預載入 -->
+            <div class="loading-skeletons">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </main>
+
+        <!-- 頁尾 -->
+        <footer class="footer fade-in" style="animation-delay: 0.3s;">
+            <p>© 2026 ya924. Portfolio crafted with <i class="fa-solid fa-heart text-danger"></i> & Antigravity AI.</p>
+            <p class="github-pages-tag"><i class="fa-solid fa-cloud-arrow-up"></i> Hosted on GitHub Pages</p>
+        </footer>
+    </div>
+
+    <!-- 載入核心邏輯 -->
+    <script src="app.js"></script>
+</body>
+</html>

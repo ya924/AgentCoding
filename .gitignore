@@ -1,0 +1,6 @@
+.env
+seed.sql
+.supabase/
+supabase/
+node_modules/
+repos.json

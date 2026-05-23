@@ -1,0 +1,641 @@
+/* CSS 變數定義：構建 Premium 色彩與設計系統 */
+:root {
+    --bg-dark: #070913;
+    --card-bg: rgba(17, 22, 39, 0.6);
+    --card-hover-bg: rgba(22, 30, 54, 0.8);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-hover-color: rgba(255, 255, 255, 0.15);
+    
+    --text-primary: #F0F3F8;
+    --text-secondary: #8E9AAF;
+    --text-muted: #64748B;
+    
+    /* 霓虹色彩漸層 */
+    --grad-primary: linear-gradient(135deg, #A855F7 0%, #EC4899 100%); /* 紫粉 */
+    --grad-secondary: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); /* 青藍 */
+    --grad-accent: linear-gradient(135deg, #F97316 0%, #EAB308 100%); /* 橙黃 */
+    --grad-card: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    
+    /* 語言色彩 */
+    --lang-php: #A855F7;
+    --lang-js: #EAB308;
+    --lang-other: #06B6D4;
+    
+    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 全域重設 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+/* 背景動態流光特效 */
+.bg-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(160px);
+    opacity: 0.15;
+    z-index: -1;
+    pointer-events: none;
+    animation: drift 20s infinite alternate ease-in-out;
+}
+
+.bg-glow-1 {
+    background: radial-gradient(circle, #EC4899 0%, transparent 70%);
+    top: -200px;
+    left: -100px;
+}
+
+.bg-glow-2 {
+    background: radial-gradient(circle, #3B82F6 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    animation-delay: -5s;
+}
+
+.bg-glow-3 {
+    background: radial-gradient(circle, #8B5CF6 0%, transparent 70%);
+    top: 40%;
+    left: 30%;
+    width: 400px;
+    height: 400px;
+    opacity: 0.1;
+    animation-delay: -10s;
+}
+
+@keyframes drift {
+    0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    100% { transform: translate(80px, 50px) scale(1.15) rotate(360deg); }
+}
+
+/* 主要容器 */
+.container {
+    width: 100%;
+    max-width: 1080px;
+    padding: 4rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    z-index: 1;
+}
+
+/* 個人資訊卡片 (毛玻璃 Glassmorphism) */
+.profile-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--grad-primary);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+    }
+    
+    .container {
+        padding: 2rem 1rem;
+    }
+    
+    .profile-card {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* 頭像與環形呼吸燈 */
+.avatar-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+}
+
+#user-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    z-index: 2;
+    position: relative;
+    transition: var(--transition-smooth);
+}
+
+.avatar-ring {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: var(--grad-primary);
+    z-index: 1;
+    animation: spin 8s linear infinite;
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+.avatar-container:hover #user-avatar {
+    transform: scale(1.05) rotate(5deg);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 個人資訊文字 */
+.profile-info h1 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.profile-info .subtitle {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #EC4899;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-info .bio {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 680px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* 按鈕設計 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 1.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-primary {
+    background: var(--grad-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(236, 72, 153, 0.5);
+}
+
+/* 數據統計區 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    background: var(--grad-secondary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* 控制台：搜尋與篩選 */
+.control-panel {
+    background: rgba(13, 17, 33, 0.4);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative;
+    flex-grow: 1;
+    min-width: 280px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1rem;
+    transition: var(--transition-smooth);
+}
+
+#search-input {
+    width: 100%;
+    padding: 0.9rem 1rem 0.9rem 3rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+#search-input:focus {
+    border-color: rgba(168, 85, 247, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+}
+
+#search-input:focus + .search-icon {
+    color: #A855F7;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.lang-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition-smooth);
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+}
+
+.filter-btn.active {
+    background: var(--grad-secondary);
+    border: none;
+    color: white;
+    box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2);
+}
+
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.sort-box i {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+#sort-select {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+#sort-select option {
+    background-color: #0D1121;
+    color: var(--text-primary);
+}
+
+/* 儲存庫卡片網格 */
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .repo-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 儲存庫卡片設計 (驚豔的毛玻璃與浮動漸層) */
+.repo-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: var(--transition-smooth);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* 卡片頂部漸層線，預設透明，Hover 顯示 */
+.repo-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--grad-secondary);
+    opacity: 0;
+    transition: var(--transition-smooth);
+}
+
+.repo-card:hover {
+    transform: translateY(-6px);
+    background: var(--card-hover-bg);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 15px 35px rgba(6, 182, 212, 0.15);
+}
+
+.repo-card:hover::before {
+    opacity: 1;
+}
+
+/* 特殊專案客製漸層 */
+.repo-card.agent-coding::before {
+    background: var(--grad-primary);
+}
+.repo-card.agent-coding:hover {
+    box-shadow: 0 15px 35px rgba(236, 72, 153, 0.15);
+}
+
+.repo-card-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.repo-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.repo-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    letter-spacing: -0.2px;
+}
+
+.repo-title:hover {
+    color: #06B6D4;
+}
+
+.repo-card.agent-coding .repo-title:hover {
+    color: #EC4899;
+}
+
+.repo-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.repo-desc {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.repo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.25rem;
+}
+
+.repo-metrics {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition-smooth);
+}
+
+.metric-item:hover {
+    color: var(--text-primary);
+}
+
+/* 語言圓點 */
+.lang-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+}
+
+.lang-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+.lang-dot.php {
+    background-color: var(--lang-php);
+    color: var(--lang-php);
+}
+
+.lang-dot.js {
+    background-color: var(--lang-js);
+    color: var(--lang-js);
+}
+
+.lang-dot.other {
+    background-color: var(--lang-other);
+    color: var(--lang-other);
+}
+
+.repo-link {
+    color: var(--text-secondary);
+    font-size: 1.15rem;
+    transition: var(--transition-smooth);
+}
+
+.repo-link:hover {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+/* 載入 Skeletons */
+.loading-skeletons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.skeleton-card {
+    height: 180px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    100% { transform: translateX(100%); }
+}
+
+/* 頁尾樣式 */
+.footer {
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.github-pages-tag {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+/* 動態載入淡入效果 */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
