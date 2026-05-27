@@ -3,78 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ya924 | GitHub Portfolio</title>
-    <!-- 引入 Google Fonts -->
+    <title>ya924 | GitHub Agentic Portfolio</title>
+    <!-- 引入專業設計字型 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- 引入 FontAwesome 圖示 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 向量圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 引入自訂樣式 -->
+    <!-- 引入高階 Light Mode 樣式系統 -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 背景流光特效 -->
-    <div class="bg-glow bg-glow-1"></div>
-    <div class="bg-glow bg-glow-2"></div>
-    <div class="bg-glow bg-glow-3"></div>
+    <!-- 奢華淺色流光背景 (Aurora UI) -->
+    <div class="aurora-glow aurora-glow-1"></div>
+    <div class="aurora-glow aurora-glow-2"></div>
+    <div class="aurora-glow aurora-glow-3"></div>
 
-    <div class="container">
-        <!-- 個人資訊頭部 -->
-        <header class="profile-card fade-in">
-            <div class="profile-header">
-                <div class="avatar-container">
-                    <img id="user-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Avatar">
-                    <div class="avatar-ring"></div>
-                </div>
-                <div class="profile-info">
-                    <h1 id="user-name">ya924</h1>
-                    <p class="subtitle"><i class="fa-solid fa-laptop-code"></i> AI Agent & Backend Developer</p>
-                    <p class="bio">專注於構建智能代理（AI Agents）、優化後端服務與自動化流程。探索程式碼的重力極限。</p>
-                    <div class="profile-links">
-                        <a href="https://github.com/ya924" target="_blank" class="btn btn-primary">
-                            <i class="fa-brands fa-github"></i> 前往 GitHub 首頁
-                        </a>
+    <div class="bento-container">
+        <!-- 頂部 Bento 網格：頭像卡、數據卡、日誌終端 -->
+        <div class="bento-top-layout">
+            
+            <!-- Bento 格 1：個人資訊與品牌 -->
+            <header class="bento-card profile-card fade-in">
+                <div class="profile-header">
+                    <div class="avatar-ring-wrapper">
+                        <img id="user-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Profile Avatar">
+                        <div class="avatar-pulsing-halo"></div>
+                    </div>
+                    <div class="profile-details">
+                        <div class="badge-role">
+                            <span class="pulse-green-dot"></span> SECURE // ONLINE
+                        </div>
+                        <h1 id="user-name">ya924</h1>
+                        <p class="tagline"><i class="fa-solid fa-laptop-code text-blue"></i> AI Agent & Backend Architect</p>
+                        <p class="bio">專注於構建自主智能代理（AI Agents）、高可用後端微服務與自動化流程優化。藉由代碼的重力極限，探索認知系統的邊界。</p>
+                        <div class="action-buttons">
+                            <a href="https://github.com/ya924" target="_blank" class="btn btn-primary">
+                                <i class="fa-brands fa-github"></i> 參觀 GitHub
+                            </a>
+                            <a href="sync.html" target="_blank" class="btn btn-secondary" title="資料庫同步中心">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> 資料庫管理
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 數據統計區塊 -->
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-value" id="stat-repos">4</span>
-                    <span class="stat-label">公開儲存庫</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value" id="stat-lang">PHP / JS</span>
-                    <span class="stat-label">主要開發語言</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value" id="stat-stars">0</span>
-                    <span class="stat-label">累積星數</span>
-                </div>
-            </div>
-        </header>
+            </header>
 
-        <!-- 控制台：搜尋與篩選 -->
-        <section class="control-panel fade-in" style="animation-delay: 0.1s;">
-            <div class="search-box">
+            <!-- Bento 格 2：AI Agent 終端日誌小工具 -->
+            <section class="bento-card terminal-card fade-in" style="animation-delay: 0.1s;">
+                <div class="terminal-bar">
+                    <div class="terminal-dots">
+                        <span class="dot-ctrl red"></span>
+                        <span class="dot-ctrl yellow"></span>
+                        <span class="dot-ctrl green"></span>
+                    </div>
+                    <div class="terminal-title">YA924@AGENTIC-SHELL:~</div>
+                    <div class="terminal-conn-status" id="db-status-badge">DATABASE: LOCAL</div>
+                </div>
+                <div class="terminal-body">
+                    <span class="sys-prefix">> initializing_agentic_protocols.sh</span>
+                    <span class="sys-output">SYSTEM LOADING: 100%</span>
+                    <div class="typing-log-wrapper">
+                        <span class="sys-prompt">root@ya924:~#</span>
+                        <span id="typing-text"></span><span class="cursor-blink">_</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Bento 格 3：數據指標面板 -->
+            <section class="bento-card stats-card fade-in" style="animation-delay: 0.15s;">
+                <div class="stats-header">
+                    <i class="fa-solid fa-chart-simple-stroke icon-stats"></i>
+                    <span>系統效能與統計</span>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-num" id="stat-repos">04</span>
+                        <span class="stat-label">公開儲存庫</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num text-gradient-blue" id="stat-stars">00</span>
+                        <span class="stat-label">累積星數</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num text-success">99.9%</span>
+                        <span class="stat-label">代理穩定度</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Bento 中部：控制面板（搜尋、篩選與排序） -->
+        <section class="bento-card control-panel fade-in" style="animation-delay: 0.2s;">
+            <div class="search-wrapper">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="search-input" placeholder="搜尋儲存庫名稱或描述...">
+                <input type="text" id="search-input" placeholder="過濾名稱、語言或描述關鍵字...">
             </div>
             
-            <div class="filter-group">
-                <div class="lang-filters" id="lang-filters">
-                    <button class="filter-btn active" data-lang="all">全部</button>
-                    <button class="filter-btn" data-lang="PHP">PHP</button>
-                    <button class="filter-btn" data-lang="JavaScript">JavaScript</button>
-                    <button class="filter-btn" data-lang="other">其他</button>
+            <div class="filter-actions">
+                <div class="filter-capsules" id="lang-filters">
+                    <button class="capsule active" data-lang="all">全部專案</button>
+                    <button class="capsule" data-lang="PHP">PHP 核心</button>
+                    <button class="capsule" data-lang="JavaScript">JS 代理</button>
+                    <button class="capsule" data-lang="other">其他技術</button>
                 </div>
                 
-                <div class="sort-box">
-                    <i class="fa-solid fa-sort"></i>
+                <div class="sort-selector-wrapper">
+                    <i class="fa-solid fa-arrow-down-wide-short icon-sort"></i>
                     <select id="sort-select">
-                        <option value="pushed">最近更新</option>
+                        <option value="pushed">最近推送</option>
                         <option value="stars">最多星數</option>
                         <option value="name">字母排序</option>
                     </select>
@@ -82,10 +119,10 @@
             </div>
         </section>
 
-        <!-- 儲存庫列表 -->
-        <main class="repo-grid" id="repo-grid">
-            <!-- 由 JS 動態渲染或預載入 -->
-            <div class="loading-skeletons">
+        <!-- Bento 底部：儲存庫 Card 網格 (動態加載/優雅降級) -->
+        <main class="repo-bento-grid" id="repo-grid">
+            <!-- 骨架屏載入動畫 (Skeleton Screens) -->
+            <div class="skeleton-wrapper">
                 <div class="skeleton-card"></div>
                 <div class="skeleton-card"></div>
                 <div class="skeleton-card"></div>
@@ -94,13 +131,17 @@
         </main>
 
         <!-- 頁尾 -->
-        <footer class="footer fade-in" style="animation-delay: 0.3s;">
-            <p>© 2026 ya924. Portfolio crafted with <i class="fa-solid fa-heart text-danger"></i> & Antigravity AI.</p>
-            <p class="github-pages-tag"><i class="fa-solid fa-cloud-arrow-up"></i> Hosted on GitHub Pages</p>
+        <footer class="bento-footer fade-in" style="animation-delay: 0.35s;">
+            <div class="footer-meta">
+                <span><i class="fa-solid fa-code-merge"></i> BUILD: V3.0-PREMIUM-LIGHT</span>
+                <span><i class="fa-solid fa-shield-halved"></i> SECURED BY SUPABASE & ANTIGRAVITY</span>
+                <span><i class="fa-solid fa-cloud"></i> DEPLOYED ON GITHUB PAGES</span>
+            </div>
+            <p class="copyright">// COGNITIVE SYSTEMS © 2026 ya924. ALL RIGHTS RESERVED.</p>
         </footer>
     </div>
 
-    <!-- 載入核心邏輯 -->
+    <!-- 載入核心 Supabase 連接與降級控制邏輯 -->
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ya924 // Supabase Sync Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-light: #F8FAFC;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(15, 23, 42, 0.08);
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --primary-color: #2563EB;
+            --primary-hover: #1D4ED8;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+            --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 柔和流光斑塊 */
+        .bg-blur {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.06;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .bg-blur-1 {
+            background: radial-gradient(circle, #3B82F6 0%, transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+        .bg-blur-2 {
+            background: radial-gradient(circle, #10B981 0%, transparent 70%);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3B82F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.2rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.8rem;
+        }
+
+        /* 輸入表單 */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.1);
+            background: #fff;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            width: fit-content;
+        }
+        .status-pending {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .status-success {
+            background-color: #D1FAE5;
+            color: #059669;
+        }
+
+        /* SQL 區塊 */
+        .code-area {
+            position: relative;
+            background: #1E293B;
+            border-radius: 12px;
+            padding: 1.2rem;
+            overflow-x: auto;
+        }
+
+        pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: #E2E8F0;
+            line-height: 1.6;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.8rem;
+            right: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #CBD5E1;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: var(--transition-smooth);
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* 按鈕與進度條 */
+        .btn-sync {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-sync:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-sync:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .progress-container {
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #E2E8F0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--success-color) 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-status {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        #log-area {
+            max-height: 150px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: none;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .log-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .log-success { color: var(--success-color); }
+        .log-error { color: var(--error-color); }
+        
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-blur bg-blur-1"></div>
+    <div class="bg-blur bg-blur-2"></div>
+
+    <div class="container">
+        <header>
+            <h1>Supabase 資料庫同步主控台</h1>
+            <p>一鍵將 GitHub 儲存庫資料從本地 Upsert 寫入您的 Supabase 資料庫</p>
+        </header>
+
+        <!-- 步驟 1：Supabase 憑證設定 -->
+        <section class="card">
+            <div class="card-title">
+                <i class="fa-solid fa-key" style="color: var(--primary-color);"></i>
+                <span>步驟 1：配置 Supabase 連線憑證</span>
+                <span id="env-badge" class="status-badge status-pending">偵測中...</span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="sb-url">Supabase 專案 URL</label>
+                    <input type="text" id="sb-url" placeholder="https://your-project.supabase.co">
+                </div>
+                <div class="form-group">
+                    <label for="sb-key">Supabase Anon Key (公有匿名金鑰)</label>
+                    <input type="password" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                </div>
+            </div>
+        </section>
+
+        <!-- 步驟 2：SQL Schema 設定 -->
+        <section class="card">
+            <div class="card-title">
+                <i class="fa-solid fa-database" style="color: var(--success-color);"></i>
+                <span>步驟 2：於 Supabase SQL Editor 執行建表語法</span>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: -0.5rem;">
+                在開始同步前，請前往您的 Supabase 後台 SQL Editor 貼上並執行以下語法建立資料表：
+            </p>
+            <div class="code-area">
+                <button class="copy-btn" id="btn-copy-sql">
+                    <i class="fa-regular fa-copy"></i> 複製 SQL
+                </button>
+                <pre id="sql-code">-- 建立 github_repos 資料表
+create table if not exists public.github_repos (
+    id bigint primary key,
+    name text not null,
+    full_name text not null,
+    html_url text not null,
+    description text,
+    language text,
+    stargazers_count integer default 0,
+    forks_count integer default 0,
+    pushed_at timestamptz,
+    custom_class text,
+    created_at timestamptz default now()
+);
+
+-- 啟用 Row Level Security (RLS)
+alter table public.github_repos enable row level security;
+
+-- 允許所有人查詢 (Select)
+create policy "Allow public read access"
+on public.github_repos for select
+using (true);
+
+-- 允許所有人插入與更新 (Upsert)
+create policy "Allow public upsert access"
+on public.github_repos for insert
+with check (true);
+
+create policy "Allow public update access"
+on public.github_repos for update
+using (true);</pre>
+            </div>
+        </section>
+
+        <!-- 步驟 3：開始同步 -->
+        <section class="card">
+            <div class="card-title">
+                <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary-color);"></i>
+                <span>步驟 3：執行資料同步</span>
+            </div>
+
+            <button class="btn-sync" id="btn-start-sync">
+                <i class="fa-solid fa-rotate"></i> 開始同步儲存庫資料
+            </button>
+
+            <!-- 進度條 -->
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-status">
+                    <span id="sync-status-text">準備中...</span>
+                    <span id="sync-percent">0%</span>
+                </div>
+            </div>
+
+            <!-- 同步日誌 -->
+            <div id="log-area"></div>
+        </section>
+
+        <footer class="footer">
+            <p>© 2026 ya924. Supabase Sync Console powered by Antigravity AI.</p>
+        </footer>
+    </div>
+
+    <script>
+        // 預載待同步儲存庫資料 (與 app.js 保持一致)
+        const PRELOADED_REPOS = [
+            {
+                id: 1247552729,
+                name: "AgentCoding",
+                full_name: "ya924/AgentCoding",
+                html_url: "https://github.com/ya924/AgentCoding",
+                description: "🚀 自動化 AI 協作開發的旗艦級實踐。利用先進的 AI 代理進行代碼自主編寫、除錯與持續部署。本個人介紹網頁即是此專案的經典首發實作！",
+                language: "HTML",
+                stargazers_count: 0,
+                forks_count: 0,
+                pushed_at: "2026-05-23T13:21:15Z",
+                custom_class: "agent-coding"
+            },
+            {
+                id: 1218108294,
+                name: "Agentic-Coding",
+                full_name: "ya924/Agentic-Coding",
+                html_url: "https://github.com/ya924/Agentic-Coding",
+                description: "🤖 探索基於 AI Agent 的自主編程框架。結合大語言模型與強大工具鏈，實現自動化分析需求、修復 Bug 及全自動代碼生成的尖端架構。",
+                language: "JavaScript",
+                stargazers_count: 0,
+                forks_count: 0,
+                pushed_at: "2026-04-24T06:21:08Z",
+                custom_class: "agent-coding"
+            },
+            {
+                id: 966092049,
+                name: "php",
+                full_name: "ya924/php",
+                html_url: "https://github.com/ya924/php",
+                description: "🐘 PHP 後端開發核心模組與高可用架構實踐。包含 OOP 封裝、MVC 設計模式應用、Restful API 開發模組與安全性防禦機制。",
+                language: "PHP",
+                stargazers_count: 0,
+                forks_count: 0,
+                pushed_at: "2025-04-14T12:07:40Z",
+                custom_class: ""
+            },
+            {
+                id: 995194973,
+                name: "PHP_-",
+                full_name: "ya924/PHP_-",
+                html_url: "https://github.com/ya924/PHP_-",
+                description: "🛠 精選 PHP 工具庫與實戰專案演練。包含資料庫連線池、全域異常監控與輕量級緩存模組，旨在加速中大型專案的佈局與開發流程。",
+                language: "PHP",
+                stargazers_count: 0,
+                forks_count: 0,
+                pushed_at: "2025-06-03T11:51:03Z",
+                custom_class: ""
+            }
+        ];
+
+        let targetRepos = [...PRELOADED_REPOS];
+
+        // 嘗試從本地獲取最新的 repos.json
+        fetch('repos.json')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    targetRepos = data;
+                    addLog(`[INFO] 成功載入本地最新 repos.json 共 ${data.length} 筆資料。`);
+                }
+            })
+            .catch(() => {
+                addLog(`[INFO] 未找到本地 repos.json，將採用內建預載的 ${targetRepos.length} 筆經典資料。`);
+            });
+
+        // DOM 元素
+        const sbUrlInput = document.getElementById('sb-url');
+        const sbKeyInput = document.getElementById('sb-key');
+        const envBadge = document.getElementById('env-badge');
+        const btnCopySql = document.getElementById('btn-copy-sql');
+        const btnStartSync = document.getElementById('btn-start-sync');
+        const progressContainer = document.getElementById('progress-container');
+        const progressFill = document.getElementById('progress-fill');
+        const syncStatusText = document.getElementById('sync-status-text');
+        const syncPercent = document.getElementById('sync-percent');
+        const logArea = document.getElementById('log-area');
+
+        // 初始化偵測本地 .env
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('.env')
+                .then(res => res.text())
+                .then(text => {
+                    const env = parseEnv(text);
+                    if (env.SUPABASE_URL && env.SUPABASE_ANON_KEY) {
+                        sbUrlInput.value = env.SUPABASE_URL;
+                        sbKeyInput.value = env.SUPABASE_ANON_KEY;
+                        envBadge.className = 'status-badge status-success';
+                        envBadge.innerHTML = '<i class="fa-solid fa-check"></i> 偵測到本地 .env';
+                        addLog('[SUCCESS] 成功從本地 .env 自動載入 Supabase 憑證！');
+                    } else {
+                        envBadge.className = 'status-badge status-pending';
+                        envBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 無憑證，請手動填寫';
+                    }
+                })
+                .catch(() => {
+                    envBadge.className = 'status-badge status-pending';
+                    envBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> 無本地 .env，請手動輸入';
+                });
+        });
+
+        // 解析 .env 格式
+        function parseEnv(text) {
+            const lines = text.split('\n');
+            const env = {};
+            lines.forEach(line => {
+                const cleanLine = line.trim();
+                if (cleanLine && !cleanLine.startsWith('#')) {
+                    const match = cleanLine.match(/^([^=]+)=(.*)$/);
+                    if (match) {
+                        const key = match[1].trim();
+                        let val = match[2].trim();
+                        // 去除引號
+                        if (val.startsWith('"') && val.endsWith('"')) val = val.slice(1, -1);
+                        if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+                        env[key] = val;
+                    }
+                }
+            });
+            return env;
+        }
+
+        // 複製 SQL code
+        btnCopySql.addEventListener('click', () => {
+            const sqlText = document.getElementById('sql-code').innerText;
+            navigator.clipboard.writeText(sqlText)
+                .then(() => {
+                    btnCopySql.innerHTML = '<i class="fa-solid fa-check"></i> 已複製';
+                    setTimeout(() => {
+                        btnCopySql.innerHTML = '<i class="fa-regular fa-copy"></i> 複製 SQL';
+                    }, 2000);
+                })
+                .catch(err => {
+                    alert('複製失敗，請手動選取複製');
+                });
+        });
+
+        // 輸出日誌
+        function addLog(message, type = '') {
+            logArea.style.display = 'flex';
+            const logItem = document.createElement('div');
+            logItem.className = `log-item ${type}`;
+            logItem.innerHTML = `<span>[${new Date().toLocaleTimeString()}]</span> <span>${message}</span>`;
+            logArea.appendChild(logItem);
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+
+        // 點擊同步
+        btnStartSync.addEventListener('click', async () => {
+            const sbUrl = sbUrlInput.value.trim();
+            const sbKey = sbKeyInput.value.trim();
+
+            if (!sbUrl || !sbKey) {
+                alert('請填寫 Supabase 專案 URL 與 Anon Key！');
+                return;
+            }
+
+            // UI 狀態重設
+            btnStartSync.disabled = true;
+            progressContainer.style.display = 'flex';
+            progressFill.style.width = '0%';
+            syncPercent.innerText = '0%';
+            syncStatusText.innerText = '正在連線至 Supabase 資料庫...';
+            logArea.innerHTML = '';
+            addLog('[INFO] 開始執行 Supabase 同步任務...');
+
+            try {
+                // 每筆資料逐一進行 Upsert
+                let count = 0;
+                for (let i = 0; i < targetRepos.length; i++) {
+                    const repo = targetRepos[i];
+                    syncStatusText.innerText = `同步中: ${repo.name} (${i + 1}/${targetRepos.length})`;
+                    addLog(`正在同步儲存庫: ${repo.name}...`);
+
+                    // 呼叫 Supabase POST REST API 進行 upsert (利用 Prefer: resolution=merge-duplicates)
+                    const response = await fetch(`${sbUrl}/rest/v1/github_repos`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': sbKey,
+                            'Authorization': `Bearer ${sbKey}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'resolution=merge-duplicates'
+                        },
+                        body: JSON.stringify({
+                            id: repo.id,
+                            name: repo.name,
+                            full_name: repo.full_name,
+                            html_url: repo.html_url,
+                            description: repo.description,
+                            language: repo.language || 'HTML',
+                            stargazers_count: repo.stargazers_count || 0,
+                            forks_count: repo.forks_count || 0,
+                            pushed_at: repo.pushed_at,
+                            custom_class: repo.custom_class || ''
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errText = await response.text();
+                        throw new Error(`連線失敗！狀態碼: ${response.status}, 原因: ${errText}`);
+                    }
+
+                    count++;
+                    const percent = Math.round((count / targetRepos.length) * 100);
+                    progressFill.style.width = `${percent}%`;
+                    syncPercent.innerText = `${percent}%`;
+                    addLog(`[SUCCESS] 儲存庫 ${repo.name} 同步成功。`, 'log-success');
+                }
+
+                syncStatusText.innerText = '同步任務全部完成！';
+                addLog(`[SUCCESS] 恭喜！已成功將 ${count} 筆儲存庫資料 Upsert 到 Supabase！`, 'log-success');
+            } catch (error) {
+                syncStatusText.innerText = '同步失敗！';
+                addLog(`[ERROR] 同步終止：${error.message}`, 'log-error');
+                console.error(error);
+            } finally {
+                btnStartSync.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
