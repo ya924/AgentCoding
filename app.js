@@ -1,8 +1,12 @@
 // ==========================================================================
 // ya924 GitHub Agentic Portfolio - Core Engine (app.js)
 // Features: Supabase REST Integration, Three-Tier Graceful Degradation,
+//           Dynamic GitHub Profile (Username & Avatar Sync),
 //           Debounced Filters, Terminal Typing Logs & Local Cache.
 // ==========================================================================
+
+// 預設要展示的 GitHub 帳號名稱 (支援動態更換)
+const GITHUB_USERNAME = 'xxxxxxxx';
 
 // 1. 靜態預載資料（提供 0 延遲與防限流降級備援，具備高質感繁體中文描述）
 const PRELOADED_REPOS = [
@@ -11,7 +15,7 @@ const PRELOADED_REPOS = [
         name: "AgentCoding",
         full_name: "ya924/AgentCoding",
         html_url: "https://github.com/ya924/AgentCoding",
-        description: "🚀 自動化 AI 協作開發的旗艦級實踐。利用先進的 AI 代理進行代碼自主編寫、除錯與持續部署。本個人介紹網頁即是此專案的經典首發實作！",
+        description: "🚀 自動化 AI 協作開發的旗艦級實踐。利用先進 of AI 代理進行代碼自主編寫、除錯與持續部署。本個人介紹網頁即是此專案的經典首發實作！",
         language: "HTML",
         stargazers_count: 0,
         forks_count: 0,
@@ -70,6 +74,8 @@ const statRepos = document.getElementById('stat-repos');
 const statStars = document.getElementById('stat-stars');
 const typingTextEl = document.getElementById('typing-text');
 const dbStatusBadge = document.getElementById('db-status-badge');
+const userAvatarEl = document.getElementById('user-avatar');
+const userNameEl = document.getElementById('user-name');
 
 // 3. 初始化載入
 document.addEventListener('DOMContentLoaded', () => {
@@ -103,7 +109,7 @@ function startTerminalLogging() {
     const phrases = [
         "accessing_neural_network_nodes...",
         "initializing_supabase_handshake.go",
-        "syncing_github_repos_table.sql",
+        `syncing_github_repos_${GITHUB_USERNAME}.sql`,
         "checking_gravitational_pull: 0G",
         "deploying_autonomous_agent.exe",
         "system_status: OPTIMAL"
@@ -202,7 +208,7 @@ async function initializeDataFetch() {
             const dbData = await reposResponse.json();
             
             if (Array.isArray(dbData) && dbData.length > 0) {
-                // 優化：如果資料庫裡沒有 custom_class，從 Preloaded 匹配補上，保證特殊樣式
+                // 動態整合數據
                 allRepos = dbData.map(dbRepo => {
                     const match = PRELOADED_REPOS.find(p => p.id === dbRepo.id);
                     return {
@@ -210,6 +216,13 @@ async function initializeDataFetch() {
                         custom_class: dbRepo.custom_class || (match ? match.custom_class : '')
                     };
                 });
+                
+                // 動態更新頭像與使用者名稱 (如果有對應擁有者)
+                if (dbData[0].full_name && dbData[0].full_name.includes('/')) {
+                    const ownerName = dbData[0].full_name.split('/')[0];
+                    userNameEl.innerText = ownerName;
+                    userAvatarEl.src = `https://avatars.githubusercontent.com/${ownerName}`;
+                }
                 
                 // 快取至 LocalStorage
                 localStorage.setItem('ya924_repos_premium', JSON.stringify(allRepos));
@@ -260,29 +273,27 @@ function parseEnv(text) {
 
 // 降級第一層：直接呼叫 GitHub API
 async function fetchGitHubApiData() {
-    console.log("[GITHUB] 啟動降級方案 A：Fetch GitHub API...");
+    console.log(`[GITHUB] 啟動降級方案 A：Fetch GitHub API (${GITHUB_USERNAME})...`);
     
     try {
-        const response = await fetch('https://api.github.com/users/ya924/repos');
-        if (!response.ok) throw new Error(`HTTP ${response.status} (可能遭遇限流)`);
+        const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos`);
+        if (!response.ok) throw new Error(`HTTP ${response.status} (可能帳號不存在或遭遇限流)`);
         
         const apiData = await response.json();
         
         if (Array.isArray(apiData) && apiData.length > 0) {
-            // 合併 API 最新數據與我們的高質感自訂中文描述
-            allRepos = PRELOADED_REPOS.map(preloaded => {
-                const apiRepo = apiData.find(r => r.id === preloaded.id);
-                if (apiRepo) {
-                    return {
-                        ...preloaded,
-                        stargazers_count: apiRepo.stargazers_count,
-                        forks_count: apiRepo.forks_count,
-                        pushed_at: apiRepo.pushed_at,
-                        description: apiRepo.description || preloaded.description,
-                        language: apiRepo.language || preloaded.language
-                    };
-                }
-                return preloaded;
+            // 動態同步頭像與用戶名稱
+            const owner = apiData[0].owner;
+            userAvatarEl.src = owner.avatar_url;
+            userNameEl.innerText = owner.login;
+            
+            // 完整介紹每個儲存庫
+            allRepos = apiData.map(repo => {
+                const match = PRELOADED_REPOS.find(p => p.name.toLowerCase() === repo.name.toLowerCase());
+                return {
+                    ...repo,
+                    custom_class: match ? match.custom_class : ''
+                };
             });
             
             // 寫入 LocalStorage 快取
@@ -296,7 +307,9 @@ async function fetchGitHubApiData() {
             
             renderRepos();
             updateStats();
-            console.log("[SUCCESS] 成功從 GitHub API 背景更新！");
+            console.log("[SUCCESS] 成功從 GitHub API 動態加載所有儲存庫！");
+        } else {
+            throw new Error("此帳號下無任何儲存庫");
         }
     } catch (apiError) {
         console.warn("[WARN] GitHub API 拉取失敗（降級第二層）：", apiError.message);
@@ -307,6 +320,12 @@ async function fetchGitHubApiData() {
         dbStatusBadge.style.borderColor = "rgba(100, 116, 139, 0.2)";
         dbStatusBadge.style.background = "rgba(100, 116, 139, 0.05)";
         
+        // 回退頭像與名稱
+        userNameEl.innerText = "ya924";
+        userAvatarEl.src = "https://avatars.githubusercontent.com/u/206577162?v=4";
+        
+        // 使用預載資料
+        allRepos = [...PRELOADED_REPOS];
         renderRepos();
         updateStats();
     }
