@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ya924 | Professional Portfolio</title>
+    <!-- 引入 Google Fonts: Outfit 與 Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入極簡瑞士風格樣式 -->
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <div class="swiss-container">
+        <!-- 頂部多主題導航列 -->
+        <nav class="theme-nav fade-in-swiss">
+            <div class="nav-brand">ya924.dev</div>
+            <div class="theme-selectors">
+                <a href="index.html" class="theme-link">Glass Theme</a>
+                <a href="index1.html" class="theme-link">Terminal Theme</a>
+                <a href="index2.html" class="theme-link active">Minimalist Light</a>
+            </div>
+        </nav>
+
+        <!-- 個人資訊頭部 (極簡專業 Swiss Style) -->
+        <header class="swiss-profile-card fade-in-swiss" style="animation-delay: 0.05s;">
+            <div class="profile-header-main">
+                <div class="avatar-holder">
+                    <img id="swiss-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Professional Avatar">
+                </div>
+                <div class="profile-details">
+                    <span class="role-badge">BACKEND ENGINEER & AGENT ARCHITECT</span>
+                    <h1>ya924</h1>
+                    <p class="profile-bio">專注於高併發後端系統設計、自動化 AI 代理（AI Agents）架構，以及極簡、安全、高性能的軟體工程實踐。以工程思維解決複雜問題。</p>
+                    <div class="action-links">
+                        <a href="https://github.com/ya924" target="_blank" class="btn-swiss btn-royal">
+                            <i class="fa-brands fa-github"></i> 訪問 GitHub 檔案
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 數據展示 (極簡線條設計) -->
+            <div class="swiss-stats">
+                <div class="stat-box">
+                    <span class="stat-number" id="stat-repos">4</span>
+                    <span class="stat-title">公有儲存庫</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="stat-lang">PHP / JS</span>
+                    <span class="stat-title">主攻語言</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number" id="stat-stars">0</span>
+                    <span class="stat-title">所獲星數</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 控制台：搜尋與篩選 (極簡、扁平化) -->
+        <section class="swiss-controls fade-in-swiss" style="animation-delay: 0.1s;">
+            <div class="swiss-search">
+                <i class="fa-solid fa-magnifying-glass search-icon-swiss"></i>
+                <input type="text" id="swiss-search-input" placeholder="搜尋項目名稱、描述或開發語言...">
+            </div>
+            
+            <div class="swiss-filter-bar">
+                <div class="swiss-filters" id="swiss-filters">
+                    <button class="swiss-filter-btn active" data-lang="all">全部項目</button>
+                    <button class="swiss-filter-btn" data-lang="PHP">PHP 核心</button>
+                    <button class="swiss-filter-btn" data-lang="JavaScript">JavaScript</button>
+                    <button class="swiss-filter-btn" data-lang="other">其他分類</button>
+                </div>
+                
+                <div class="swiss-sort">
+                    <span class="sort-tag">排序：</span>
+                    <select id="swiss-sort-select">
+                        <option value="pushed">最新更動</option>
+                        <option value="stars">星數多寡</option>
+                        <option value="name">字母名稱</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- 儲存庫網格 -->
+        <main class="swiss-grid" id="swiss-grid">
+            <div class="swiss-loading">
+                <i class="fa-solid fa-circle-notch fa-spin spinner-swiss"></i>
+                <p>資料庫載入中...</p>
+            </div>
+        </main>
+
+        <!-- 頁尾 -->
+        <footer class="swiss-footer fade-in-swiss" style="animation-delay: 0.2s;">
+            <div class="footer-meta">
+                <span>© 2026 ya924. Portfolio designed with Swiss Minimalism.</span>
+                <span>系統狀態：<span class="status-indicator">ON-GRID</span></span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 載入極簡淺色核心邏輯 -->
+    <script src="app2.js"></script>
+</body>
+</html>

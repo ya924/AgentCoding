@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ya924 | GitHub Portfolio — Supabase 動態版</title>
+    <meta name="description" content="ya924 的 GitHub 個人儲存庫展示頁，由 Supabase 資料庫動態驅動。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style3.css">
+</head>
+<body>
+    <!-- Aurora 流光背景 -->
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+
+    <div class="layout">
+
+        <!-- ── 頂部 Bento 三格區 ── -->
+        <div class="top-bento">
+
+            <!-- 個人資訊主卡 -->
+            <header class="card profile-card fade-in">
+                <div class="profile-inner">
+                    <div class="avatar-wrap">
+                        <img id="user-avatar"
+                             src="https://avatars.githubusercontent.com/u/206577162?v=4"
+                             alt="ya924 Avatar">
+                        <div class="avatar-halo"></div>
+                    </div>
+                    <div class="profile-text">
+                        <span class="online-badge">
+                            <span class="green-dot"></span> ONLINE
+                        </span>
+                        <h1 id="user-name">ya924</h1>
+                        <p class="subtitle">
+                            <i class="fa-solid fa-robot"></i>
+                            AI Agent &amp; Backend Architect
+                        </p>
+                        <p class="bio">
+                            專注於構建自主智能代理（AI Agents）、高可用後端微服務與自動化流程。<br>
+                            探索程式碼的重力極限，藉由 AI 讓開發進化。
+                        </p>
+                        <div class="cta-row">
+                            <a href="https://github.com/ya924" target="_blank" class="btn btn-blue">
+                                <i class="fa-brands fa-github"></i> GitHub
+                            </a>
+                            <a href="sync.html" target="_blank" class="btn btn-outline">
+                                <i class="fa-solid fa-database"></i> 同步資料庫
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 終端日誌小工具 -->
+            <section class="card terminal-card fade-in" style="animation-delay:.1s">
+                <div class="term-bar">
+                    <div class="term-dots">
+                        <span class="td red"></span>
+                        <span class="td yellow"></span>
+                        <span class="td green"></span>
+                    </div>
+                    <span class="term-title">ya924@supabase-agent:~</span>
+                    <span class="db-badge" id="db-badge">DB: 連線中...</span>
+                </div>
+                <div class="term-body">
+                    <div class="term-line">
+                        <span class="tc-green">&gt;</span>
+                        <span class="tc-blue">initializing_supabase_client.js</span>
+                    </div>
+                    <div class="term-line tc-teal" id="term-status">SYSTEM READY</div>
+                    <div class="term-line">
+                        <span class="tc-purple">root@ya924:~#</span>
+                        <span id="typing-text"></span><span class="blink">_</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 數據統計格 -->
+            <section class="card stats-card fade-in" style="animation-delay:.15s">
+                <p class="stats-label">
+                    <i class="fa-solid fa-chart-column"></i> 統計數據
+                </p>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-num" id="stat-repos">—</span>
+                        <span class="stat-desc">儲存庫</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num blue" id="stat-stars">—</span>
+                        <span class="stat-desc">總星數</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num green" id="stat-langs">—</span>
+                        <span class="stat-desc">語言數</span>
+                    </div>
+                </div>
+            </section>
+
+        </div><!-- /top-bento -->
+
+        <!-- ── 控制列 ── -->
+        <section class="card control-bar fade-in" style="animation-delay:.2s">
+            <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="search-input" placeholder="搜尋儲存庫名稱、語言或描述...">
+            </div>
+            <div class="filters-wrap">
+                <div class="lang-pills" id="lang-filters">
+                    <button class="pill active" data-lang="all">全部</button>
+                    <button class="pill" data-lang="PHP">PHP</button>
+                    <button class="pill" data-lang="JavaScript">JavaScript</button>
+                    <button class="pill" data-lang="HTML">HTML</button>
+                    <button class="pill" data-lang="other">其他</button>
+                </div>
+                <div class="sort-wrap">
+                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                    <select id="sort-select">
+                        <option value="pushed">最近推送</option>
+                        <option value="stars">最多星數</option>
+                        <option value="name">名稱排序</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 儲存庫網格 ── -->
+        <main id="repo-grid" class="repo-grid">
+            <!-- 骨架屏 -->
+            <div class="skeletons" id="skeletons">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+            </div>
+        </main>
+
+        <!-- ── 頁尾 ── -->
+        <footer class="footer fade-in" style="animation-delay:.35s">
+            <div class="footer-row">
+                <span><i class="fa-solid fa-database"></i> Powered by Supabase</span>
+                <span><i class="fa-solid fa-wand-magic-sparkles"></i> Built by Antigravity AI</span>
+                <span><i class="fa-brands fa-github"></i> Hosted on GitHub Pages</span>
+            </div>
+            <p class="copyright">© 2026 ya924. All rights reserved.</p>
+        </footer>
+
+    </div><!-- /layout -->
+
+    <script src="app3.js"></script>
+</body>
+</html>
