@@ -6,7 +6,7 @@
 // ==========================================================================
 
 // 預設要展示的 GitHub 帳號名稱 (支援動態更換)
-const GITHUB_USERNAME = 'xxxxxxxx';
+const GITHUB_USERNAME = 'ya924';
 
 // 1. 靜態預載資料（提供 0 延遲與防限流降級備援，具備高質感繁體中文描述）
 const PRELOADED_REPOS = [
@@ -15,7 +15,7 @@ const PRELOADED_REPOS = [
         name: "AgentCoding",
         full_name: "ya924/AgentCoding",
         html_url: "https://github.com/ya924/AgentCoding",
-        description: "🚀 自動化 AI 協作開發的旗艦級實踐。利用先進 of AI 代理進行代碼自主編寫、除錯與持續部署。本個人介紹網頁即是此專案的經典首發實作！",
+        description: "🚀 自動化 AI 協作開發的旗艦級實踐。利用先進的 AI 代理進行代碼自主編寫、除錯與持續部署。本個人介紹網頁即是此專案的經典首發實作！",
         language: "HTML",
         stargazers_count: 0,
         forks_count: 0,
