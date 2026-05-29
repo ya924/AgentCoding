@@ -3,47 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ya924 // Terminal Portfolio</title>
-    <!-- 引入 Google Fonts: Share Tech Mono 與 Fira Code -->
+    <title>YA924 // CYBER-SHELL PORTFOLIO</title>
+    <!-- 引入專業設計字型 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-    <!-- 引入 FontAwesome 圖示 -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- 引入 FontAwesome 向量圖示 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 引入 Cyberpunk 主題樣式 -->
+    <!-- 引入升級版賽博朋克樣式表 -->
     <link rel="stylesheet" href="style1.css">
 </head>
 <body>
-    <!-- CRT 螢幕掃描線與噪點特效 -->
-    <div class="crt-overlay"></div>
-    <div class="scanlines"></div>
+    <!-- Canvas 動態賽博數碼矩陣雨 -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- CRT 螢幕特效 (掃描線與外層暈光) -->
+    <div id="crt-overlay" class="crt-overlay"></div>
+    <div id="scanlines" class="scanlines"></div>
 
     <div class="cyber-container">
-        <!-- 頂部終端機狀態列 -->
+        <!-- 頂部 Bento 終端機狀態列 -->
         <div class="terminal-bar fade-in-cyber">
             <div class="terminal-dots">
                 <span class="dot red"></span>
                 <span class="dot yellow"></span>
                 <span class="dot green"></span>
             </div>
-            <div class="terminal-title">YA924@AGENTIC-TERMINAL: ~/portfolio</div>
-            <div class="terminal-status">SECURE CONNECTION // ONLINE</div>
+            <div class="terminal-title"><i class="fa-solid fa-terminal text-cyan"></i> YA924@AGENTIC-SHELL: ~/portfolio</div>
+            <!-- CRT 特效動態切換按鈕 (改善 UX 與眼睛疲勞) -->
+            <button id="crt-toggle-btn" class="crt-toggle-btn" title="切換 CRT 螢幕濾鏡">
+                <span class="btn-glow-dot"></span> [ CRT_FILTER: ACTIVE ]
+            </button>
         </div>
 
-        <!-- 頂部 Profile 區塊 -->
-        <header class="cyber-profile fade-in-cyber" style="animation-delay: 0.1s;">
+        <!-- 頂部 Bento 個人品牌格 -->
+        <header class="cyber-profile fade-in-cyber" style="animation-delay: 0.08s;">
+            <!-- HUD 定位框裝飾線 -->
+            <div class="hud-corner top-left"></div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-corner bottom-right"></div>
+
             <div class="profile-main">
+                <!-- 頭像高階 Glitch 效果 -->
                 <div class="avatar-glitch-wrapper">
-                    <img id="cyber-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Glitch Avatar">
+                    <div class="hud-scanner-line"></div>
+                    <img id="cyber-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Glitch Profile Avatar">
                     <div class="glitch-layer layer-1"></div>
                     <div class="glitch-layer layer-2"></div>
                 </div>
                 
                 <div class="cyber-bio-block">
+                    <!-- 色差分離與故障發光標題 -->
                     <h1 class="cyber-glitch-text" data-text="YA924">YA924</h1>
                     <div class="cyber-tagline">
                         <span class="cyber-prompt">> </span><span id="typing-text"></span><span class="cursor-blink">_</span>
                     </div>
+                    <p class="cyber-bio-desc">
+                        專注於自主智能代理（AI Agents）、後端高併發架構與自動化控制系統的研發。藉由代碼的重力極限，在賽博空間中構建高階的自動化認知網絡。
+                    </p>
+                    
+                    <!-- 數據看板小工具 -->
                     <div class="cyber-stats-row">
                         <div class="cyber-stat">
                             <span class="stat-label">REPOS</span>
@@ -57,27 +77,38 @@
                             <span class="stat-label">STABILITY</span>
                             <span class="stat-num text-green">99.9%</span>
                         </div>
+                        <div class="cyber-stat">
+                            <span class="stat-label">AGENT_LOAD</span>
+                            <span class="stat-num text-pink" id="core-load">0.02G</span>
+                        </div>
                     </div>
                 </div>
             </div>
+            
+            <!-- 快速導覽按鈕列 -->
             <div class="cyber-links">
                 <a href="https://github.com/ya924" target="_blank" class="cyber-btn btn-neon-blue">
                     <span class="btn-text"><i class="fa-brands fa-github"></i> ACCESS_GITHUB</span>
                     <span class="btn-slice"></span>
                 </a>
                 <a href="index.html" class="cyber-btn btn-neon-pink">
-                    <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> GLASS_THEME</span>
+                    <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> SWITCH_AURORA_THEME</span>
                     <span class="btn-slice"></span>
                 </a>
             </div>
         </header>
 
-        <!-- 控制中心：搜尋與過濾 -->
-        <section class="cyber-controls fade-in-cyber" style="animation-delay: 0.2s;">
+        <!-- Bento 控制中心 (搜尋、篩選與排序) -->
+        <section class="cyber-controls fade-in-cyber" style="animation-delay: 0.16s;">
+            <div class="hud-corner top-left"></div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-corner bottom-right"></div>
+
             <div class="cyber-search-wrapper">
                 <span class="search-prompt">root@ya924:~# search --query</span>
-                <input type="text" id="cyber-search" placeholder="輸入關鍵字篩選資料庫...">
-                <i class="fa-solid fa-terminal pulse-terminal"></i>
+                <input type="text" id="cyber-search" placeholder="輸入關鍵字檢索儲存庫資料...">
+                <i class="fa-solid fa-circle-nodes pulse-terminal"></i>
             </div>
             
             <div class="cyber-filter-bar">
@@ -85,11 +116,11 @@
                     <button class="cyber-filter-btn active" data-lang="all">[ ALL_PROJECTS ]</button>
                     <button class="cyber-filter-btn" data-lang="PHP">[ PHP_CORE ]</button>
                     <button class="cyber-filter-btn" data-lang="JavaScript">[ JS_AGENTS ]</button>
-                    <button class="cyber-filter-btn" data-lang="other">[ OTHER ]</button>
+                    <button class="cyber-filter-btn" data-lang="other">[ OTHERS ]</button>
                 </div>
                 
                 <div class="cyber-sort">
-                    <span class="sort-label"><i class="fa-solid fa-chevron-right"></i> SORT:</span>
+                    <span class="sort-label"><i class="fa-solid fa-chevron-right text-pink"></i> SORT:</span>
                     <select id="cyber-sort-select">
                         <option value="pushed">LATEST_PUSH</option>
                         <option value="stars">STARS_COUNT</option>
@@ -99,10 +130,11 @@
             </div>
         </section>
 
-        <!-- 儲存庫 Terminal 網格 -->
+        <!-- 儲存庫卡片 Bento 網格 -->
         <main class="cyber-grid" id="cyber-grid">
+            <!-- 骨架屏載入動畫 -->
             <div class="terminal-loading">
-                <span class="loading-prompt">ya924@agentic-shell:~$ initializing_database...</span>
+                <span class="loading-prompt"><i class="fa-solid fa-circle-notch fa-spin text-green"></i> ya924@agentic-shell:~$ initializing_neural_database...</span>
                 <div class="progress-bar-cyber">
                     <div class="progress-fill"></div>
                 </div>
@@ -110,17 +142,17 @@
         </main>
 
         <!-- 頁尾 -->
-        <footer class="cyber-footer fade-in-cyber" style="animation-delay: 0.4s;">
+        <footer class="cyber-footer fade-in-cyber" style="animation-delay: 0.3s;">
             <div class="footer-grid">
-                <span class="grid-cell"><i class="fa-solid fa-code-branch"></i> SYSTEM: V2.5.0-PRO-MAX</span>
-                <span class="grid-cell"><i class="fa-solid fa-shield-halved"></i> SECURED BY ANTIGRAWITY AI</span>
-                <span class="grid-cell"><i class="fa-solid fa-circle-nodes"></i> PAGE: INDEX1.HTML</span>
+                <span class="grid-cell"><i class="fa-solid fa-circle-nodes text-pink"></i> SYSTEM: V3.0-PRO-MAX</span>
+                <span class="grid-cell"><i class="fa-solid fa-shield-halved text-cyan"></i> SECURED BY SUPABASE & ANTIGRAVITY</span>
+                <span class="grid-cell"><i class="fa-solid fa-code text-green"></i> COMPILER: MODERN_ES6</span>
             </div>
             <p class="copyright">// COGNITIVE SYSTEMS © 2026 ya924. ALL RIGHTS RESERVED.</p>
         </footer>
     </div>
 
-    <!-- 載入賽博朋克核心邏輯 -->
+    <!-- 載入賽博朋克核心控制引擎 -->
     <script src="app1.js"></script>
 </body>
 </html>

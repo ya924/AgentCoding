@@ -1,30 +1,32 @@
-/* =======================================================
+/* ==========================================================================
    ya924 // Terminal Portfolio - Style Sheet (style1.css)
-   Theme: Retro-Futurism / Cyberpunk Terminal Pro Max
-   ======================================================= */
+   Theme: Retro-Futurism / Cyberpunk Terminal Pro Max V3.0
+   Design System: ui-ux-pro-max-skill Core Compliance
+   ========================================================================== */
 
 :root {
-    --bg-black: #06070d;
-    --terminal-dark: #0c0e17;
-    --terminal-card-bg: rgba(12, 14, 23, 0.7);
-    --border-cyber: #1e293b;
+    --bg-black: #06070a;
+    --terminal-dark: rgba(10, 12, 22, 0.85);
+    --border-cyber: rgba(0, 240, 255, 0.15);
+    --border-cyber-hover: rgba(0, 240, 255, 0.6);
     
-    /* 霓虹賽博朋克調色盤 */
+    /* 霓虹賽博朋克調色盤 (HSL 安全對比色) */
     --neon-blue: #00f0ff;
     --neon-pink: #ff0055;
     --neon-green: #39ff14;
     --neon-yellow: #ffea00;
     
-    --text-primary: #00f0ff; /* 終端藍為主要色 */
+    --text-primary: #00f0ff;
     --text-green: #39ff14;
     --text-pink: #ff0055;
-    --text-muted: #4e5b73;
-    --text-white: #f1f5f9;
+    --text-muted: #64748b;
+    --text-white: #f8fafc;
     
     --font-mono: 'Fira Code', 'Share Tech Mono', monospace;
     --font-orbitron: 'Orbitron', sans-serif;
     
-    --transition-cyber: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    --transition-cyber: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-neon: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* 全域重設與背景設定 */
@@ -43,25 +45,41 @@ body {
     justify-content: center;
     position: relative;
     overflow-x: hidden;
+    line-height: 1.6;
     
-    /* 網格背景圖樣 */
+    /* 科技感微細網格背景 */
     background-image: 
-        linear-gradient(rgba(18, 24, 45, 0.3) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(18, 24, 45, 0.3) 1px, transparent 1px);
-    background-size: 30px 30px;
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
     background-position: center;
 }
 
-/* CRT 掃描線與電子干擾效果 */
+/* Canvas 賽博數碼矩陣雨定位 */
+#matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.15; /* 輕量化不干擾文字對比 */
+}
+
+/* ==========================================================================
+   CRT 掃描線與電子干擾濾鏡 (可用開關切換)
+   ========================================================================== */
 .crt-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle, transparent 55%, rgba(0, 0, 0, 0.6) 130%);
+    background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.75) 120%);
     z-index: 9999;
     pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
 .scanlines {
@@ -72,12 +90,13 @@ body {
     height: 100vh;
     background: linear-gradient(
         rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.15) 50%
+        rgba(0, 0, 0, 0.2) 50%
     );
     background-size: 100% 4px;
     z-index: 9998;
     pointer-events: none;
     animation: scanline-flicker 0.15s infinite;
+    transition: opacity 0.5s ease;
 }
 
 @keyframes scanline-flicker {
@@ -86,102 +105,186 @@ body {
     100% { opacity: 0.95; }
 }
 
-/* 核心容器 */
+/* 當 CRT 被關閉時的降級樣式 (護眼與無障礙優化) */
+body.crt-disabled .crt-overlay,
+body.crt-disabled .scanlines {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    display: none !important;
+}
+
+/* ==========================================================================
+   Bento 容器與科技邊角 HUD
+   ========================================================================== */
 .cyber-container {
     width: 100%;
-    max-width: 1080px;
-    padding: 3rem 1.5rem;
+    max-width: 1100px;
+    padding: 3.5rem 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
     z-index: 1;
 }
 
-/* 頂部終端機狀態列 */
+/* HUD 邊角 L 型定位線 */
+.hud-corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid transparent;
+    z-index: 3;
+    pointer-events: none;
+    transition: var(--transition-cyber);
+}
+.hud-corner.top-left { top: 6px; left: 6px; border-top-color: var(--neon-blue); border-left-color: var(--neon-blue); }
+.hud-corner.top-right { top: 6px; right: 6px; border-top-color: var(--neon-blue); border-right-color: var(--neon-blue); }
+.hud-corner.bottom-left { bottom: 6px; left: 6px; border-bottom-color: var(--neon-blue); border-left-color: var(--neon-blue); }
+.hud-corner.bottom-right { bottom: 6px; right: 6px; border-bottom-color: var(--neon-blue); border-right-color: var(--neon-blue); }
+
+/* Hover 狀態下定位角微縮與變色 */
+header.cyber-profile:hover .hud-corner,
+section.cyber-controls:hover .hud-corner {
+    width: 16px;
+    height: 16px;
+}
+
+header.cyber-profile:hover .hud-corner { border-color: transparent; border-top-color: var(--neon-pink); border-bottom-color: var(--neon-pink); border-left-color: var(--neon-pink); border-right-color: var(--neon-pink); }
+
+/* ==========================================================================
+   頂部終端機狀態列與 CRT 切換開關
+   ========================================================================== */
 .terminal-bar {
-    background: #0f172a;
+    background: #0b0d19;
     border: 1px solid var(--border-cyber);
     border-bottom: none;
-    border-radius: 12px 12px 0 0;
-    padding: 0.75rem 1.5rem;
+    border-radius: 18px 18px 0 0;
+    padding: 0.9rem 1.75rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 1px;
-    box-shadow: 0 -5px 20px rgba(0, 240, 255, 0.05);
+    box-shadow: 0 -8px 25px rgba(0, 240, 255, 0.04);
 }
 
 .terminal-dots {
     display: flex;
-    gap: 6px;
+    gap: 7px;
 }
 
 .terminal-dots .dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    box-shadow: 0 0 6px currentColor;
 }
-
-.terminal-dots .dot.red { background-color: var(--neon-pink); }
-.terminal-dots .dot.yellow { background-color: var(--neon-yellow); }
-.terminal-dots .dot.green { background-color: var(--neon-green); }
+.terminal-dots .dot.red { color: var(--neon-pink); background-color: var(--neon-pink); }
+.terminal-dots .dot.yellow { color: var(--neon-yellow); background-color: var(--neon-yellow); }
+.terminal-dots .dot.green { color: var(--neon-green); background-color: var(--neon-green); }
 
 .terminal-title {
     color: var(--text-white);
     font-family: var(--font-mono);
 }
 
-.terminal-status {
-    color: var(--neon-green);
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 0.7; }
-    50% { opacity: 1; }
-}
-
-/* 頂部 Profile 區塊 */
-.cyber-profile {
-    background: var(--terminal-card-bg);
+/* CRT 開關按鈕設計 */
+.crt-toggle-btn {
+    background: rgba(0, 240, 255, 0.05);
     border: 1px solid var(--border-cyber);
-    border-radius: 0 0 12px 12px;
-    padding: 2.5rem;
+    color: var(--neon-blue);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-neon);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.1);
+}
+
+.crt-toggle-btn:hover {
+    background: rgba(0, 240, 255, 0.15);
+    border-color: var(--neon-blue);
+    text-shadow: 0 0 5px var(--neon-blue);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.btn-glow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--neon-green);
+    box-shadow: 0 0 8px var(--neon-green);
+    animation: ring-pulse 2s infinite ease-in-out;
+}
+
+/* 當 CRT 關閉時的按鈕狀態 */
+body.crt-disabled .crt-toggle-btn {
+    color: var(--text-muted);
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+}
+body.crt-disabled .btn-glow-dot {
+    background-color: var(--text-muted);
+    box-shadow: none;
+    animation: none;
+}
+
+/* ==========================================================================
+   頂部 Bento 個人品牌格
+   ========================================================================== */
+.cyber-profile {
+    background: var(--terminal-dark);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border-cyber);
+    border-radius: 0 0 18px 18px;
+    padding: 3rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
     position: relative;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+    transition: var(--transition-cyber);
+}
+
+.cyber-profile:hover {
+    border-color: var(--border-cyber-hover);
+    box-shadow: 0 20px 50px rgba(0, 240, 255, 0.06);
 }
 
 .profile-main {
     display: flex;
     align-items: center;
-    gap: 2.5rem;
+    gap: 3.5rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .profile-main {
         flex-direction: column;
         text-align: center;
+        gap: 2rem;
     }
     
     .cyber-profile {
-        padding: 1.5rem;
+        padding: 2rem 1.5rem;
     }
 }
 
-/* 頭像故障風特效 (Glitch Effect) */
+/* 頭像 Glitch 特效與雷射掃描線 */
 .avatar-glitch-wrapper {
     position: relative;
-    width: 140px;
-    height: 140px;
+    width: 150px;
+    height: 150px;
     border: 2px solid var(--neon-blue);
-    padding: 4px;
-    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    padding: 5px;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 #cyber-avatar {
@@ -189,96 +292,124 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
+    filter: saturate(1.1) contrast(1.1);
+    transition: var(--transition-cyber);
+}
+
+/* 綠色 HUD 雷射掃描線 */
+.hud-scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--neon-green);
+    box-shadow: 0 0 10px var(--neon-green);
+    z-index: 5;
+    pointer-events: none;
+    animation: scanner-move 4s infinite linear;
+}
+
+@keyframes scanner-move {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
 }
 
 .glitch-layer {
     position: absolute;
-    top: 4px;
-    left: 4px;
-    width: calc(100% - 8px);
-    height: calc(100% - 8px);
+    top: 5px;
+    left: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
     background: url('https://avatars.githubusercontent.com/u/206577162?v=4');
     background-size: cover;
     opacity: 0;
     pointer-events: none;
 }
 
+.avatar-glitch-wrapper:hover #cyber-avatar {
+    transform: scale(1.02);
+}
+
 .avatar-glitch-wrapper:hover .glitch-layer {
-    opacity: 0.75;
+    opacity: 0.85;
 }
 
 .avatar-glitch-wrapper:hover .glitch-layer.layer-1 {
-    animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
-    filter: hue-rotate(90deg) saturate(1.5);
-    left: 8px;
+    animation: glitch-anim-1 0.35s infinite linear alternate-reverse;
+    filter: hue-rotate(90deg) saturate(1.6);
+    left: 10px;
 }
 
 .avatar-glitch-wrapper:hover .glitch-layer.layer-2 {
-    animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
-    filter: hue-rotate(280deg) saturate(2);
-    left: 0px;
+    animation: glitch-anim-2 0.28s infinite linear alternate-reverse;
+    filter: hue-rotate(270deg) saturate(2);
+    left: -2px;
 }
 
 @keyframes glitch-anim-1 {
-    0% { clip-path: inset(40% 0 61% 0); transform: skew(-3deg); }
-    20% { clip-path: inset(92% 0 1% 0); transform: skew(1deg); }
-    40% { clip-path: inset(15% 0 80% 0); transform: skew(-1deg); }
-    60% { clip-path: inset(80% 0 5% 0); transform: skew(3deg); }
-    80% { clip-path: inset(3% 0 92% 0); transform: skew(-2deg); }
-    100% { clip-path: inset(62% 0 15% 0); transform: skew(0deg); }
+    0% { clip-path: inset(30% 0 60% 0); transform: skew(-4deg); }
+    20% { clip-path: inset(80% 0 1% 0); transform: skew(2deg); }
+    40% { clip-path: inset(10% 0 85% 0); transform: skew(-2deg); }
+    60% { clip-path: inset(70% 0 5% 0); transform: skew(4deg); }
+    80% { clip-path: inset(2% 0 90% 0); transform: skew(-3deg); }
+    100% { clip-path: inset(55% 0 20% 0); transform: skew(0deg); }
 }
 
 @keyframes glitch-anim-2 {
-    0% { clip-path: inset(12% 0 85% 0); transform: skew(2deg); }
-    20% { clip-path: inset(70% 0 12% 0); transform: skew(-2deg); }
-    40% { clip-path: inset(2% 0 95% 0); transform: skew(1deg); }
-    60% { clip-path: inset(90% 0 2% 0); transform: skew(-1deg); }
-    80% { clip-path: inset(45% 0 45% 0); transform: skew(3deg); }
-    100% { clip-path: inset(15% 0 70% 0); transform: skew(-3deg); }
+    0% { clip-path: inset(10% 0 80% 0); transform: skew(3deg); }
+    20% { clip-path: inset(60% 0 15% 0); transform: skew(-3deg); }
+    40% { clip-path: inset(1% 0 90% 0); transform: skew(2deg); }
+    60% { clip-path: inset(85% 0 2% 0); transform: skew(-2deg); }
+    80% { clip-path: inset(35% 0 45% 0); transform: skew(4deg); }
+    100% { clip-path: inset(10% 0 65% 0); transform: skew(-4deg); }
 }
 
-/* 個人資訊文字與 Glitch Title */
+/* 個人簡介與 Glitch 標題 */
 .cyber-bio-block {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.85rem;
 }
 
 .cyber-glitch-text {
     font-family: var(--font-orbitron), sans-serif;
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 900;
     color: var(--text-white);
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     position: relative;
     text-shadow: 
-        0.05em 0 0 rgba(255, 0, 85, 0.75),
-        -0.025em -0.05em 0 rgba(0, 240, 255, 0.75),
-        0.025em 0.05em 0 rgba(57, 255, 20, 0.75);
-    animation: glitch-glow 1s infinite alternate;
+        0.05em 0 0 rgba(255, 0, 85, 0.6),
+        -0.025em -0.05em 0 rgba(0, 240, 255, 0.6),
+        0.025em 0.05em 0 rgba(57, 255, 20, 0.6);
+    animation: glitch-glow 2s infinite alternate ease-in-out;
 }
 
 @keyframes glitch-glow {
-    0% { text-shadow: 0 0 4px var(--neon-blue); }
-    100% { text-shadow: 0 0 12px var(--neon-blue), 0 0 2px var(--neon-pink); }
+    0% { text-shadow: 0 0 6px var(--neon-blue); }
+    100% { text-shadow: 0 0 16px var(--neon-blue), 0 0 3px var(--neon-pink); }
 }
 
 .cyber-tagline {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    font-weight: 600;
     color: var(--neon-green);
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.3rem;
 }
 
 .cyber-prompt {
-    font-weight: bold;
+    font-weight: 800;
     color: var(--neon-pink);
 }
 
 .cursor-blink {
-    animation: blink-cursor 1s infinite;
+    animation: blink-cursor 1.2s infinite steps(2);
+    color: var(--neon-green);
 }
 
 @keyframes blink-cursor {
@@ -286,57 +417,64 @@ body {
     50% { opacity: 1; }
 }
 
-.cyber-profile .cyber-bio-block p {
+.cyber-bio-desc {
     color: var(--text-white);
+    opacity: 0.85;
     font-size: 0.95rem;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
-/* 賽博統計數據 */
+/* 數據看板小工具 */
 .cyber-stats-row {
     display: flex;
-    gap: 2rem;
+    gap: 2.2rem;
     margin-top: 1rem;
     border-top: 1px dashed var(--border-cyber);
-    padding-top: 1rem;
+    padding-top: 1.25rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .cyber-stats-row {
         justify-content: center;
         flex-wrap: wrap;
+        gap: 1.5rem;
     }
 }
 
 .cyber-stat {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3rem;
 }
 
 .cyber-stat .stat-label {
     font-size: 0.7rem;
     color: var(--text-muted);
+    font-weight: 600;
     letter-spacing: 1.5px;
 }
 
 .cyber-stat .stat-num {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: var(--text-white);
+    font-family: var(--font-orbitron), sans-serif;
 }
 
-.cyber-stat .stat-num.text-cyan { color: var(--neon-blue); text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); }
-.cyber-stat .stat-num.text-green { color: var(--neon-green); text-shadow: 0 0 8px rgba(57, 255, 20, 0.5); }
+.cyber-stat .stat-num.text-cyan { color: var(--neon-blue); text-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+.cyber-stat .stat-num.text-green { color: var(--neon-green); text-shadow: 0 0 10px rgba(57, 255, 20, 0.4); }
+.cyber-stat .stat-num.text-pink { color: var(--neon-pink); text-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
 
-/* 賽博按鈕 (Cyber Button) */
+/* ==========================================================================
+   快速導覽按鈕列 (Cyber Buttons)
+   ========================================================================== */
 .cyber-links {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     flex-wrap: wrap;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .cyber-links {
         justify-content: center;
     }
@@ -347,7 +485,7 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.8rem 2rem;
+    padding: 0.9rem 2.2rem;
     text-decoration: none;
     font-family: var(--font-mono);
     font-size: 0.85rem;
@@ -358,31 +496,31 @@ body {
     border: 1px solid var(--neon-blue);
     cursor: pointer;
     overflow: hidden;
-    transition: var(--transition-cyber);
+    transition: var(--transition-neon);
 }
 
 .cyber-btn.btn-neon-blue {
     border-color: var(--neon-blue);
-    box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.1), 0 0 10px rgba(0, 240, 255, 0.1);
+    box-shadow: inset 0 0 12px rgba(0, 240, 255, 0.08), 0 0 8px rgba(0, 240, 255, 0.08);
 }
 
 .cyber-btn.btn-neon-pink {
     border-color: var(--neon-pink);
-    box-shadow: inset 0 0 10px rgba(255, 0, 85, 0.1), 0 0 10px rgba(255, 0, 85, 0.1);
+    box-shadow: inset 0 0 12px rgba(255, 0, 85, 0.08), 0 0 8px rgba(255, 0, 85, 0.08);
 }
 
-/* 斜切滑動遮罩 */
+/* 斜切遮罩動畫 */
 .cyber-btn::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
+    left: -110%;
     width: 100%;
     height: 100%;
     background: var(--neon-blue);
     z-index: 1;
     transform: skewX(-20deg);
-    transition: var(--transition-cyber);
+    transition: var(--transition-neon);
 }
 
 .cyber-btn.btn-neon-pink::before {
@@ -390,18 +528,18 @@ body {
 }
 
 .cyber-btn:hover::before {
-    left: 100%;
-    animation: sweep 0.8s forwards;
+    left: 110%;
+    animation: sweep 0.9s forwards;
 }
 
 @keyframes sweep {
-    0% { left: -110%; }
-    100% { left: 110%; }
+    0% { left: -120%; }
+    100% { left: 120%; }
 }
 
 .cyber-btn:hover {
     color: var(--bg-black);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .cyber-btn.btn-neon-blue:hover {
@@ -421,15 +559,27 @@ body {
     z-index: 2;
 }
 
-/* 控制中心 */
+/* ==========================================================================
+   Bento 控制面板 (搜尋、篩選、排序)
+   ========================================================================== */
 .cyber-controls {
-    background: var(--terminal-card-bg);
+    background: var(--terminal-dark);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border-cyber);
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 18px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
+    position: relative;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    transition: var(--transition-cyber);
+}
+
+.cyber-controls:hover {
+    border-color: var(--border-cyber-hover);
+    box-shadow: 0 15px 40px rgba(0, 240, 255, 0.05);
 }
 
 .cyber-search-wrapper {
@@ -437,15 +587,22 @@ body {
     display: flex;
     align-items: center;
     border: 1px solid var(--border-cyber);
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
-    padding: 0.25rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 0.3rem 1.25rem;
+    transition: var(--transition-neon);
+}
+
+.cyber-search-wrapper:focus-within {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
 }
 
 .search-prompt {
     font-size: 0.85rem;
     color: var(--neon-pink);
-    margin-right: 0.75rem;
+    margin-right: 0.85rem;
+    font-weight: 700;
     user-select: none;
 }
 
@@ -457,7 +614,7 @@ body {
     color: var(--neon-blue);
     font-family: var(--font-mono);
     font-size: 0.95rem;
-    padding: 0.6rem 0;
+    padding: 0.65rem 0;
     text-shadow: 0 0 4px rgba(0, 240, 255, 0.3);
 }
 
@@ -476,61 +633,74 @@ body {
 
 .cyber-filters {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.6rem;
     flex-wrap: wrap;
 }
 
 .cyber-filter-btn {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-cyber);
     color: var(--text-muted);
     font-family: var(--font-mono);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
+    font-weight: 600;
+    padding: 0.55rem 1.15rem;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.8rem;
-    transition: var(--transition-cyber);
+    transition: var(--transition-neon);
 }
 
 .cyber-filter-btn:hover {
     color: var(--neon-blue);
     border-color: var(--neon-blue);
+    background: rgba(0, 240, 255, 0.03);
 }
 
 .cyber-filter-btn.active {
     color: var(--neon-green);
     border-color: var(--neon-green);
     background: rgba(57, 255, 20, 0.05);
-    box-shadow: 0 0 10px rgba(57, 255, 20, 0.1);
+    box-shadow: 0 0 12px rgba(57, 255, 20, 0.15);
+    text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
 }
 
 .cyber-sort {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     font-size: 0.8rem;
 }
 
 .sort-label {
     color: var(--text-muted);
+    font-weight: 700;
 }
 
 #cyber-sort-select {
-    background: #0f172a;
+    background: #0a0c16;
     border: 1px solid var(--border-cyber);
     color: var(--neon-blue);
     font-family: var(--font-mono);
-    padding: 0.4rem 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
     outline: none;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
+    transition: var(--transition-neon);
 }
 
-/* 賽博網格與卡片 */
+#cyber-sort-select:hover {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.15);
+}
+
+/* ==========================================================================
+   儲存庫卡片 Bento 網格
+   ========================================================================== */
 .cyber-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 @media (max-width: 1024px) {
@@ -539,28 +709,45 @@ body {
     }
 }
 
-/* 終端機卡片 (Terminal Card) */
+/* 終端科技卡片 (Terminal Card) */
 .terminal-card {
-    background: rgba(12, 14, 23, 0.8);
+    background: rgba(10, 12, 22, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border-cyber);
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
     transition: var(--transition-cyber);
     position: relative;
+    min-height: 240px;
+}
+
+/* 雙層霓虹描邊與呼吸發光效果 */
+.terminal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-blue), transparent);
+    opacity: 0.3;
+    transition: var(--transition-cyber);
 }
 
 .card-header {
-    background: rgba(15, 23, 42, 0.6);
-    border-bottom: 1px solid var(--border-cyber);
-    padding: 0.6rem 1.25rem;
+    background: rgba(15, 23, 42, 0.7);
+    border-bottom: 1px solid rgba(0, 240, 255, 0.08);
+    padding: 0.7rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.75rem;
     color: var(--text-muted);
+    font-weight: 600;
 }
 
 .card-header .sys-prompt {
@@ -569,10 +756,10 @@ body {
 }
 
 .card-body {
-    padding: 1.5rem 1.25rem;
+    padding: 1.8rem 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
     flex-grow: 1;
 }
 
@@ -580,123 +767,178 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 }
 
 .cyber-card-title {
     font-family: var(--font-orbitron), sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--text-white);
     text-decoration: none;
-    transition: var(--transition-cyber);
+    transition: var(--transition-neon);
+    letter-spacing: -0.2px;
 }
 
 .cyber-card-title:hover {
     color: var(--neon-blue);
-    text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
 }
 
 .cyber-lang-tag {
     font-size: 0.7rem;
-    border: 1px solid var(--border-cyber);
-    padding: 0.2rem 0.5rem;
+    font-weight: 700;
+    border: 1px solid rgba(0, 240, 255, 0.1);
+    padding: 0.2rem 0.6rem;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(0, 240, 255, 0.03);
     color: var(--text-muted);
 }
 
 .cyber-card-desc {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     color: var(--text-white);
     opacity: 0.8;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
+/* 儲存庫內置技能進度條 */
+.repo-progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: auto;
+}
+
+.repo-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.repo-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 240, 255, 0.05);
+}
+
+.repo-progress-fill {
+    height: 100%;
+    background: var(--neon-blue);
+    box-shadow: 0 0 6px var(--neon-blue);
+    width: 0%; /* JS中動態觸發 */
+    transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 卡片頁尾 */
 .card-footer {
-    border-top: 1px dashed var(--border-cyber);
-    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(0, 240, 255, 0.08);
+    padding: 1.1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
     color: var(--text-muted);
+    font-weight: 600;
 }
 
 .card-metrics {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
 .card-metric-item {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    transition: var(--transition-cyber);
+    gap: 0.45rem;
+    transition: var(--transition-neon);
 }
 
 .card-metric-item:hover {
     color: var(--neon-blue);
 }
 
-.card-metric-item.lang-item {
-    font-weight: 700;
-}
-
-.card-metric-item.lang-item.php { color: #A855F7; }
+.card-metric-item.lang-item.php { color: #a855f7; }
 .card-metric-item.lang-item.js { color: var(--neon-yellow); }
 .card-metric-item.lang-item.other { color: var(--neon-blue); }
 
 .card-link {
     color: var(--neon-blue);
-    font-size: 1rem;
-    transition: var(--transition-cyber);
+    font-size: 1.05rem;
+    transition: var(--transition-neon);
 }
 
 .card-link:hover {
     color: var(--neon-pink);
-    transform: scale(1.15) rotate(15deg);
-    text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+    transform: scale(1.2) rotate(15deg);
+    text-shadow: 0 0 10px rgba(255, 0, 85, 0.6);
 }
 
-/* Hover 卡片亮起邊框與發光 */
+/* Hover 發光與動態呼吸框變色 */
 .terminal-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-5px);
     border-color: var(--neon-blue);
-    box-shadow: 0 12px 30px rgba(0, 240, 255, 0.15);
+    box-shadow: 0 15px 35px rgba(0, 240, 255, 0.12);
 }
 
-/* 特殊卡片發粉色光 */
+.terminal-card:hover::before {
+    background: var(--neon-blue);
+    opacity: 1;
+}
+
+/* 針對 Agent 旗艦專案設定粉紅發光 */
+.terminal-card.cyber-agent::before {
+    background: linear-gradient(90deg, var(--neon-pink), transparent);
+}
+
 .terminal-card.cyber-agent:hover {
     border-color: var(--neon-pink);
-    box-shadow: 0 12px 30px rgba(255, 0, 85, 0.15);
+    box-shadow: 0 15px 35px rgba(255, 0, 85, 0.12);
+}
+
+.terminal-card.cyber-agent:hover::before {
+    background: var(--neon-pink);
 }
 
 .terminal-card.cyber-agent .card-header .sys-prompt {
     color: var(--neon-blue);
 }
 
-/* 載入動畫 */
+.terminal-card.cyber-agent .repo-progress-fill {
+    background: var(--neon-pink);
+    box-shadow: 0 0 6px var(--neon-pink);
+}
+
+/* ==========================================================================
+   骨架屏與載入動畫 (Skeleton Screens)
+   ========================================================================== */
 .terminal-loading {
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    padding: 4rem 0;
+    padding: 6rem 0;
 }
 
 .loading-prompt {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     color: var(--neon-green);
-    animation: pulse 1.2s infinite;
+    text-shadow: 0 0 6px rgba(57, 255, 20, 0.3);
 }
 
 .progress-bar-cyber {
-    width: 250px;
-    height: 6px;
+    width: 280px;
+    height: 8px;
     border: 1px solid var(--border-cyber);
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -704,24 +946,26 @@ body {
     width: 0%;
     height: 100%;
     background: var(--neon-green);
-    box-shadow: 0 0 10px var(--neon-green);
-    animation: load-progress 1.5s ease-in-out infinite;
+    box-shadow: 0 0 12px var(--neon-green);
+    animation: load-progress 1.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
 }
 
 @keyframes load-progress {
     0% { width: 0%; }
-    50% { width: 80%; }
+    50% { width: 85%; }
     100% { width: 100%; }
 }
 
-/* 賽博頁尾 */
+/* ==========================================================================
+   賽博頁尾與微動畫
+   ========================================================================== */
 .cyber-footer {
     border-top: 1px solid var(--border-cyber);
-    padding-top: 1.5rem;
+    padding-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.25rem;
 }
 
 .footer-grid {
@@ -736,14 +980,14 @@ body {
     .footer-grid {
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.6rem;
     }
 }
 
 .grid-cell {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
 }
 
 .copyright {
@@ -752,11 +996,11 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* 賽博載入動畫 */
+/* 賽博載入動畫 (Bento Grid) */
 .fade-in-cyber {
     opacity: 0;
     transform: translateY(15px);
-    animation: cyberFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: cyberFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes cyberFadeIn {
