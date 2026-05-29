@@ -3,156 +3,865 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YA924 // CYBER-SHELL PORTFOLIO</title>
-    <!-- 引入專業設計字型 -->
+    <title>ya924 | Bento Portfolio</title>
+    <meta name="description" content="ya924 的個人 GitHub 介紹網頁，採用 Bento Box 設計美學與 UI/UX Pro Max 優化指南。">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Share+Tech+Mono&family=Orbitron:wght@500;700;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- 引入 FontAwesome 向量圖示 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 引入升級版賽博朋克樣式表 -->
-    <link rel="stylesheet" href="style1.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #030303;
+            --card-bg: rgba(10, 11, 18, 0.6);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --card-border-hover: rgba(255, 255, 255, 0.15);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #475569;
+            
+            /* 霓虹發光色系 */
+            --glow-purple: rgba(168, 85, 247, 0.15);
+            --glow-blue: rgba(59, 130, 246, 0.15);
+            --glow-green: rgba(34, 197, 94, 0.15);
+            
+            --primary-grad: linear-gradient(135deg, #c084fc 0%, #6366f1 50%, #60a5fa 100%);
+            
+            /* 語言發光色 */
+            --lang-python: #38bdf8;
+            --lang-js: #facc15;
+            --lang-php: #a78bfa;
+            
+            --transition-bounce: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* 基礎設置 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        /* 背景網格紋理 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* 背景流動極光 */
+        .aura-bg {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.02) 40%, rgba(0, 0, 0, 0) 70%);
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            pointer-events: none;
+            filter: blur(80px);
+            animation: drift 20s infinite alternate;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Bento 網格佈局 */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(180px, auto);
+            gap: 1.5rem;
+        }
+
+        /* 通用 Bento 卡片 */
+        .bento-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 28px;
+            padding: 2rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition-bounce);
+            cursor: default;
+        }
+
+        /* 邊框 Spotlight 發光 */
+        .bento-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(500px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.06), transparent 50%);
+            z-index: 3;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bento-card:hover::after {
+            opacity: 1;
+        }
+
+        .bento-card:hover {
+            border-color: var(--card-border-hover);
+            transform: translateY(-5px) scale(1.005);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 
+                        0 0 40px rgba(99, 102, 241, 0.03);
+        }
+
+        /* Card 1: Profile Card (2x2) */
+        .card-profile {
+            grid-column: span 2;
+            grid-row: span 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: radial-gradient(circle at top left, var(--glow-purple) 0%, transparent 60%), var(--card-bg);
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            flex-shrink: 0;
+        }
+
+        .avatar-glow {
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: var(--primary-grad);
+            border-radius: 50%;
+            z-index: -1;
+            filter: blur(8px);
+            opacity: 0.6;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            object-fit: cover;
+            background: #090d16;
+        }
+
+        .name-meta h1 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: var(--primary-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .name-meta p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .profile-bio {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .profile-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .typewriter-box {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-blue);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .typewriter-cursor {
+            animation: blink 0.8s infinite;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            height: 46px;
+            padding: 0 1.5rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .social-btn:hover {
+            background: var(--text-main);
+            color: var(--bg-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Card 2: Stats Card (2x1) */
+        .card-stats {
+            grid-column: span 2;
+            background: radial-gradient(circle at bottom right, var(--glow-blue) 0%, transparent 60%), var(--card-bg);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .stats-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex-grow: 1;
+        }
+
+        .stats-header {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .stats-counters {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .counter-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .counter-num {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.1;
+        }
+
+        .counter-lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .stats-chart-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            flex-shrink: 0;
+        }
+
+        /* SVG 圓環圖表 */
+        .chart-svg {
+            transform: rotate(-90deg);
+        }
+
+        .chart-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.03);
+            stroke-width: 8;
+        }
+
+        .chart-segment {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 1s ease;
+        }
+
+        .chart-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-center-num {
+            font-size: 1.1rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .chart-center-lbl {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        /* Card 3: Status / Stack Card (2x1) */
+        .card-status {
+            grid-column: span 2;
+            background: radial-gradient(circle at top right, var(--glow-green) 0%, transparent 60%), var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .status-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            background: rgba(34, 197, 94, 0.06);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        .stack-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .stack-tag {
+            padding: 0.35rem 0.85rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+            transition: var(--transition-smooth);
+        }
+
+        .stack-tag:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-main);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Card 4-7: Projects Card (2x1 for main, 1x1 for secondary) */
+        .card-project {
+            grid-column: span 2;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-project.half {
+            grid-column: span 1;
+        }
+
+        @media (max-width: 768px) {
+            .card-project.half {
+                grid-column: span 2;
+            }
+        }
+
+        .proj-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .proj-icon-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: var(--transition-smooth);
+        }
+
+        .proj-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            color: var(--text-main);
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .proj-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .proj-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding-top: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .proj-lang {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .lang-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .proj-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .bento-card:hover .proj-link {
+            background: var(--text-main);
+            color: var(--bg-color);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* 專案卡片 Hover 特效細節 */
+        .bento-card:hover .proj-icon-wrapper {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* RWD 佈局切換 */
+        @media (max-width: 992px) {
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .card-profile {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+            .card-stats {
+                grid-column: span 2;
+            }
+            .card-status {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: auto;
+            }
+            .card-profile, .card-stats, .card-status, .card-project, .card-project.half {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+            .stats-counters {
+                gap: 1.5rem;
+            }
+            .card-stats {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stats-chart-wrapper {
+                align-self: center;
+            }
+            .container {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 6rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            z-index: 10;
+        }
+
+        footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        footer a:hover {
+            color: var(--text-main);
+        }
+
+        /* 動畫效果 */
+        @keyframes drift {
+            from { transform: translateX(-55%) translateY(-10px); }
+            to { transform: translateX(-45%) translateY(10px); }
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+    </style>
 </head>
 <body>
-    <!-- Canvas 動態賽博數碼矩陣雨 -->
-    <canvas id="matrix-canvas"></canvas>
 
-    <!-- CRT 螢幕特效 (掃描線與外層暈光) -->
-    <div id="crt-overlay" class="crt-overlay"></div>
-    <div id="scanlines" class="scanlines"></div>
+    <!-- 極光微光背景 -->
+    <div class="aura-bg"></div>
 
-    <div class="cyber-container">
-        <!-- 頂部 Bento 終端機狀態列 -->
-        <div class="terminal-bar fade-in-cyber">
-            <div class="terminal-dots">
-                <span class="dot red"></span>
-                <span class="dot yellow"></span>
-                <span class="dot green"></span>
-            </div>
-            <div class="terminal-title"><i class="fa-solid fa-terminal text-cyan"></i> YA924@AGENTIC-SHELL: ~/portfolio</div>
-            <!-- CRT 特效動態切換按鈕 (改善 UX 與眼睛疲勞) -->
-            <button id="crt-toggle-btn" class="crt-toggle-btn" title="切換 CRT 螢幕濾鏡">
-                <span class="btn-glow-dot"></span> [ CRT_FILTER: ACTIVE ]
-            </button>
-        </div>
-
-        <!-- 頂部 Bento 個人品牌格 -->
-        <header class="cyber-profile fade-in-cyber" style="animation-delay: 0.08s;">
-            <!-- HUD 定位框裝飾線 -->
-            <div class="hud-corner top-left"></div>
-            <div class="hud-corner top-right"></div>
-            <div class="hud-corner bottom-left"></div>
-            <div class="hud-corner bottom-right"></div>
-
-            <div class="profile-main">
-                <!-- 頭像高階 Glitch 效果 -->
-                <div class="avatar-glitch-wrapper">
-                    <div class="hud-scanner-line"></div>
-                    <img id="cyber-avatar" src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924 Glitch Profile Avatar">
-                    <div class="glitch-layer layer-1"></div>
-                    <div class="glitch-layer layer-2"></div>
-                </div>
-                
-                <div class="cyber-bio-block">
-                    <!-- 色差分離與故障發光標題 -->
-                    <h1 class="cyber-glitch-text" data-text="YA924">YA924</h1>
-                    <div class="cyber-tagline">
-                        <span class="cyber-prompt">> </span><span id="typing-text"></span><span class="cursor-blink">_</span>
+    <div class="container">
+        <main class="bento-grid">
+            
+            <!-- 1. Profile Card -->
+            <section class="bento-card card-profile">
+                <div>
+                    <div class="profile-top">
+                        <div class="avatar-container">
+                            <div class="avatar-glow"></div>
+                            <img src="https://avatars.githubusercontent.com/u/206577162?v=4" alt="ya924" class="avatar">
+                        </div>
+                        <div class="name-meta">
+                            <h1>ya924</h1>
+                            <p>@GitHub Developer</p>
+                        </div>
                     </div>
-                    <p class="cyber-bio-desc">
-                        專注於自主智能代理（AI Agents）、後端高併發架構與自動化控制系統的研發。藉由代碼的重力極限，在賽博空間中構建高階的自動化認知網絡。
+                    <p class="profile-bio">
+                        致力於將先進的人工智慧與軟體工程結合。專注於 AI 自動化代理（Agent）框架研發、系統架構優化，並以極簡優雅的程式碼實作複雜的系統邏輯。
                     </p>
-                    
-                    <!-- 數據看板小工具 -->
-                    <div class="cyber-stats-row">
-                        <div class="cyber-stat">
-                            <span class="stat-label">REPOS</span>
-                            <span class="stat-num" id="stat-repos">04</span>
+                </div>
+                <div class="profile-bottom">
+                    <div class="typewriter-box">
+                        <span id="typewriter"></span><span class="typewriter-cursor">|</span>
+                    </div>
+                    <a href="https://github.com/ya924" target="_blank" rel="noopener noreferrer" class="social-btn" id="profile-github-link">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        GitHub 檔案
+                    </a>
+                </div>
+            </section>
+
+            <!-- 2. Stats Card -->
+            <section class="bento-card card-stats">
+                <div class="stats-left">
+                    <div class="stats-header">倉庫統計與數據</div>
+                    <div class="stats-counters">
+                        <div class="counter-item">
+                            <span class="counter-num">4</span>
+                            <span class="counter-lbl">儲存庫</span>
                         </div>
-                        <div class="cyber-stat">
-                            <span class="stat-label">STARS</span>
-                            <span class="stat-num text-cyan" id="stat-stars">00</span>
-                        </div>
-                        <div class="cyber-stat">
-                            <span class="stat-label">STABILITY</span>
-                            <span class="stat-num text-green">99.9%</span>
-                        </div>
-                        <div class="cyber-stat">
-                            <span class="stat-label">AGENT_LOAD</span>
-                            <span class="stat-num text-pink" id="core-load">0.02G</span>
+                        <div class="counter-item">
+                            <span class="counter-num">0</span>
+                            <span class="counter-lbl">星星</span>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- 快速導覽按鈕列 -->
-            <div class="cyber-links">
-                <a href="https://github.com/ya924" target="_blank" class="cyber-btn btn-neon-blue">
-                    <span class="btn-text"><i class="fa-brands fa-github"></i> ACCESS_GITHUB</span>
-                    <span class="btn-slice"></span>
-                </a>
-                <a href="index.html" class="cyber-btn btn-neon-pink">
-                    <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> SWITCH_AURORA_THEME</span>
-                    <span class="btn-slice"></span>
-                </a>
-            </div>
-        </header>
-
-        <!-- Bento 控制中心 (搜尋、篩選與排序) -->
-        <section class="cyber-controls fade-in-cyber" style="animation-delay: 0.16s;">
-            <div class="hud-corner top-left"></div>
-            <div class="hud-corner top-right"></div>
-            <div class="hud-corner bottom-left"></div>
-            <div class="hud-corner bottom-right"></div>
-
-            <div class="cyber-search-wrapper">
-                <span class="search-prompt">root@ya924:~# search --query</span>
-                <input type="text" id="cyber-search" placeholder="輸入關鍵字檢索儲存庫資料...">
-                <i class="fa-solid fa-circle-nodes pulse-terminal"></i>
-            </div>
-            
-            <div class="cyber-filter-bar">
-                <div class="cyber-filters" id="cyber-filters">
-                    <button class="cyber-filter-btn active" data-lang="all">[ ALL_PROJECTS ]</button>
-                    <button class="cyber-filter-btn" data-lang="PHP">[ PHP_CORE ]</button>
-                    <button class="cyber-filter-btn" data-lang="JavaScript">[ JS_AGENTS ]</button>
-                    <button class="cyber-filter-btn" data-lang="other">[ OTHERS ]</button>
+                    <div class="stack-list" style="margin-top: 1rem;">
+                        <span class="stack-tag" style="color: var(--lang-php);">PHP 50%</span>
+                        <span class="stack-tag" style="color: var(--lang-python);">Python 25%</span>
+                        <span class="stack-tag" style="color: var(--lang-js);">JavaScript 25%</span>
+                    </div>
                 </div>
                 
-                <div class="cyber-sort">
-                    <span class="sort-label"><i class="fa-solid fa-chevron-right text-pink"></i> SORT:</span>
-                    <select id="cyber-sort-select">
-                        <option value="pushed">LATEST_PUSH</option>
-                        <option value="stars">STARS_COUNT</option>
-                        <option value="name">ALPHABETICAL</option>
-                    </select>
+                <div class="stats-chart-wrapper">
+                    <!-- SVG 環狀圖 -->
+                    <svg width="110" height="110" class="chart-svg">
+                        <circle cx="55" cy="55" r="45" class="chart-circle-bg" />
+                        <!-- Segment 1: PHP (50% = 141.37) -->
+                        <circle cx="55" cy="55" r="45" class="chart-segment" style="stroke: var(--lang-php); stroke-dasharray: 141.37 282.74; stroke-dashoffset: 0;" />
+                        <!-- Segment 2: Python (25% = 70.68) -->
+                        <circle cx="55" cy="55" r="45" class="chart-segment" style="stroke: var(--lang-python); stroke-dasharray: 70.68 282.74; stroke-dashoffset: -141.37;" />
+                        <!-- Segment 3: JS (25% = 70.68) -->
+                        <circle cx="55" cy="55" r="45" class="chart-segment" style="stroke: var(--lang-js); stroke-dasharray: 70.68 282.74; stroke-dashoffset: -212.05;" />
+                    </svg>
+                    <div class="chart-center-text">
+                        <span class="chart-center-num">PHP</span>
+                        <span class="chart-center-lbl">主要語言</span>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- 儲存庫卡片 Bento 網格 -->
-        <main class="cyber-grid" id="cyber-grid">
-            <!-- 骨架屏載入動畫 -->
-            <div class="terminal-loading">
-                <span class="loading-prompt"><i class="fa-solid fa-circle-notch fa-spin text-green"></i> ya924@agentic-shell:~$ initializing_neural_database...</span>
-                <div class="progress-bar-cyber">
-                    <div class="progress-fill"></div>
+            <!-- 3. Status Card -->
+            <section class="bento-card card-status">
+                <div>
+                    <div class="status-top">
+                        <span class="stats-header">目前狀態</span>
+                        <span class="status-badge">
+                            <span class="status-dot"></span>
+                            AI 代理開發中
+                        </span>
+                    </div>
+                    <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem;">
+                        現正聚焦於優化自主 Coding Agent，利用多 Agent 協同工作流來提升自動化編碼的準確性與代碼品質。
+                    </p>
                 </div>
-            </div>
+                <div>
+                    <span class="stats-header" style="display: block; margin-bottom: 0.5rem;">常用技術棧</span>
+                    <div class="stack-list">
+                        <span class="stack-tag">Python</span>
+                        <span class="stack-tag">Node.js</span>
+                        <span class="stack-tag">PHP</span>
+                        <span class="stack-tag">Git</span>
+                        <span class="stack-tag">Agentic Core</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Project: AgentCoding (2x1) -->
+            <section class="bento-card card-project" style="background: radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.05) 0%, transparent 60%), var(--card-bg);">
+                <div>
+                    <div class="proj-top">
+                        <div class="proj-icon-wrapper" style="background: rgba(56, 189, 248, 0.06); color: var(--lang-python);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        </div>
+                        <span class="status-badge" style="background: rgba(56, 189, 248, 0.05); border-color: rgba(56, 189, 248, 0.15); color: var(--lang-python); font-size: 0.75rem;">Experimental</span>
+                    </div>
+                    <h3 class="proj-title">AgentCoding</h3>
+                    <p class="proj-desc">自主 AI 代理編碼實驗專案。具備自主規劃、代碼分析、自動化重構與本地自我驗證功能，探索未來開發者的代理人工協同模式。</p>
+                </div>
+                <div class="proj-bottom">
+                    <span class="proj-lang">
+                        <span class="lang-indicator" style="background-color: var(--lang-python);"></span>
+                        Python
+                    </span>
+                    <a href="https://github.com/ya924/AgentCoding" target="_blank" rel="noopener noreferrer" class="proj-link" title="檢視 GitHub 儲存庫" id="proj-link-agentcoding">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 5. Project: Agentic-Coding (1x1) -->
+            <section class="bento-card card-project half" style="background: radial-gradient(circle at bottom left, rgba(250, 204, 21, 0.05) 0%, transparent 60%), var(--card-bg);">
+                <div>
+                    <div class="proj-top">
+                        <div class="proj-icon-wrapper" style="background: rgba(250, 204, 21, 0.06); color: var(--lang-js);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        </div>
+                    </div>
+                    <h3 class="proj-title">Agentic-Coding</h3>
+                    <p class="proj-desc">基於 Agent 的開發指令集與輕量化工作流。封裝多項 API 工具，實現全自動除錯與品質優化。</p>
+                </div>
+                <div class="proj-bottom">
+                    <span class="proj-lang">
+                        <span class="lang-indicator" style="background-color: var(--lang-js);"></span>
+                        JavaScript
+                    </span>
+                    <a href="https://github.com/ya924/Agentic-Coding" target="_blank" rel="noopener noreferrer" class="proj-link" title="檢視 GitHub 儲存庫" id="proj-link-agentic">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 6. Project: php (1x1) -->
+            <section class="bento-card card-project half" style="background: radial-gradient(circle at bottom left, rgba(167, 139, 250, 0.05) 0%, transparent 60%), var(--card-bg);">
+                <div>
+                    <div class="proj-top">
+                        <div class="proj-icon-wrapper" style="background: rgba(167, 139, 250, 0.06); color: var(--lang-php);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                        </div>
+                    </div>
+                    <h3 class="proj-title">php</h3>
+                    <p class="proj-desc">PHP 基礎功能模組與 OOP 物件導向設計模式的經典實作範例。</p>
+                </div>
+                <div class="proj-bottom">
+                    <span class="proj-lang">
+                        <span class="lang-indicator" style="background-color: var(--lang-php);"></span>
+                        PHP
+                    </span>
+                    <a href="https://github.com/ya924/php" target="_blank" rel="noopener noreferrer" class="proj-link" title="檢視 GitHub 儲存庫" id="proj-link-php">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 7. Project: PHP_- (2x1) -->
+            <section class="bento-card card-project" style="background: radial-gradient(circle at bottom left, rgba(167, 139, 250, 0.05) 0%, transparent 60%), var(--card-bg);">
+                <div>
+                    <div class="proj-top">
+                        <div class="proj-icon-wrapper" style="background: rgba(167, 139, 250, 0.06); color: var(--lang-php);">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                        </div>
+                        <span class="status-badge" style="background: rgba(167, 139, 250, 0.05); border-color: rgba(167, 139, 250, 0.15); color: var(--lang-php); font-size: 0.75rem;">Tools</span>
+                    </div>
+                    <h3 class="proj-title">PHP_-</h3>
+                    <p class="proj-desc">PHP 後端小工具集成與進階語法性能調優。包含多執行緒模擬、檔案系統操作最佳化與多種後端處理小工具。</p>
+                </div>
+                <div class="proj-bottom">
+                    <span class="proj-lang">
+                        <span class="lang-indicator" style="background-color: var(--lang-php);"></span>
+                        PHP
+                    </span>
+                    <a href="https://github.com/ya924/PHP_-" target="_blank" rel="noopener noreferrer" class="proj-link" title="檢視 GitHub 儲存庫" id="proj-link-php-dash">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </a>
+                </div>
+            </section>
+
         </main>
-
-        <!-- 頁尾 -->
-        <footer class="cyber-footer fade-in-cyber" style="animation-delay: 0.3s;">
-            <div class="footer-grid">
-                <span class="grid-cell"><i class="fa-solid fa-circle-nodes text-pink"></i> SYSTEM: V3.0-PRO-MAX</span>
-                <span class="grid-cell"><i class="fa-solid fa-shield-halved text-cyan"></i> SECURED BY SUPABASE & ANTIGRAVITY</span>
-                <span class="grid-cell"><i class="fa-solid fa-code text-green"></i> COMPILER: MODERN_ES6</span>
-            </div>
-            <p class="copyright">// COGNITIVE SYSTEMS © 2026 ya924. ALL RIGHTS RESERVED.</p>
+        
+        <footer>
+            <p>
+                Bento Design with <span style="color: #c084fc;">✦</span> by <a href="https://github.com/ya924" target="_blank" rel="noopener noreferrer">ya924</a> © 2026.
+            </p>
         </footer>
     </div>
 
-    <!-- 載入賽博朋克核心控制引擎 -->
-    <script src="app1.js"></script>
+    <script>
+        // 1. 打字機動畫效果
+        const phrases = ["AI Agent 探索者", "全端開發愛好者", "自動化編碼實踐者"];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typewriterEl = document.getElementById('typewriter');
+        
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let nextSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                nextSpeed = 2000; // 停頓時間
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                nextSpeed = 500;
+            }
+
+            setTimeout(type, nextSpeed);
+        }
+
+        // 2. 邊框 Spotlight 發光追蹤
+        const cards = document.querySelectorAll('.bento-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // 初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(type, 800);
+        });
+    </script>
 </body>
 </html>
